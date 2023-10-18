@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "lalit singh",
+  "author": "shoaib zaki",
   "license": "ISC",
   "dependencies": {
     "@getyoti/sdk-sandbox": "^1.7.0",

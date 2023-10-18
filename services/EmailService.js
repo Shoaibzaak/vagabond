@@ -9,7 +9,6 @@ var transporter = nodeMailer.createTransport({
     pass: process.env.NODEMAILER_PASSWORD,
   },
 });
-console.log(transporter,'transport')
 module.exports = {
   sendMail: (payload) => {
     const { sender, recipients, subject, html, text } = payload;

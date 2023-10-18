@@ -1,6 +1,5 @@
 module.exports = {
-  ClientRoutes: require("./ClientRoutes"),
-  ClientAuthRoutes: require("./Auth/ClientAuthRoutes"),
-  CompanyUserAuthRoutes: require("./Auth/CompanyUserAuthRoutes"),
+  PinRoutes: require("./PinRoutes"),
+  UserAuthRoutes: require("./Auth/UserAuthRoutes"),
 
 };

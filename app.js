@@ -6,16 +6,16 @@ var port = require("./config/config");
 var connection = require("./connection/connection").connect;
 var app = express();
 var server = require("http").createServer(app);
-var io = require("socket.io")(server,{
-  cors: {
-       origin: [ "http://localhost:3011","http://18.134.181.142:3000"],
-    // credentials: true
-    methods: ["GET", "POST"]
-  }
+// var io = require("socket.io")(server,{
+//   cors: {
+//        origin: [ "http://localhost:3011","http://18.134.181.142:3000"],
+//     // credentials: true
+//     methods: ["GET", "POST"]
+//   }
 
-}
-);
-app.set("io", io);
+// }
+// );
+// app.set("io", io);
 const SocketService = require("./services/socket");
 var response = require("./response/index");
 const logger = require("./services/LoggerService");
@@ -66,4 +66,4 @@ connection((result) => {
   }
 });
 
-SocketService(io);
+// SocketService(io);
