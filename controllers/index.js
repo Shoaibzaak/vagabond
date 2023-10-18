@@ -1,4 +1,4 @@
 module.exports = {
-  ClientAuthController: require("./Auth/UserAuthController"),
-  ClientController: require("./PinController"),
+  UserAuthController: require("./Auth/UserAuthController"),
+  PinController: require("./PinController"),
 };

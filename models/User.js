@@ -24,7 +24,7 @@ const UserModel = new Schema(
     otpExpiry: {
       type: Number
     },
-    is_verified: {
+    isEmailConfirmed: {
       type: Boolean,
       default: false,
     },

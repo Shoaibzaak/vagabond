@@ -21,13 +21,11 @@ const userStorage = multer.diskStorage({
 });
 const upload = multer({ storage: userStorage });
 
-router.route("/register").post(Controller.ClientAuthController.register);
-
-
-router.route("/login").post(Controller.ClientAuthController.login);
-
-router.route("/forgetpassword").post(Controller.ClientAuthController.forgetPassword);
-router.route("/changepassword").post(Controller.ClientAuthController.changePassword);
+router.route("/register").post(Controller.UserAuthController.register);
+router.route("/accontVerification").post(Controller.UserAuthController.accountVerification);
+router.route("/login").post(Controller.UserAuthController.login);
+router.route("/forgetpassword").post(Controller.UserAuthController.forgetPassword);
+router.route("/changepassword").post(Controller.UserAuthController.changePassword);
 
 // router.route("/profile/setup").post(
 //   upload.fields([
