@@ -2,7 +2,7 @@
   "name": "pro-ath",
   "version": "1.0.0",
   "description": "pro-athlite server",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
