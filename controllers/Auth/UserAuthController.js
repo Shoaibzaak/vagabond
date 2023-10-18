@@ -13,7 +13,7 @@ const validatePassword = require("../../utils/validatePassword");
 module.exports = {
   register: async (req, res, next) => {
     try {
-      const { name, email, phoneNumber, password } = req.body;
+      const { name, email,password } = req.body;
       // Email validation
       if (!Validation.validateEmail(email)) {
         return res.badRequest("Invalid email format");
@@ -26,7 +26,6 @@ module.exports = {
       const User = new Model.User({
         name,
         email,
-        phoneNumber,
         password: hash
       });
       const verfifyEmail = await Model.User.findOne({ email });
@@ -37,43 +36,6 @@ module.exports = {
       next(err);
     }
   },
-
-
-  verifyAccount: catchAsync(async (req, res, next) => {
-    const { email } = req.body;
-    if (!email)
-      return res
-        .status(400)
-        .json({ success: false, message: Message.badRequest, data: null });
-    // Email validation
-    if (!Validation.validateEmail(email)) {
-      return res.badRequest("Invalid email format");
-    }
-
-    // Check if the email is valid
-    const isEmailValid = await Model.User.findOne({
-      // email: email.toLowerCase(),
-      email: email
-    });
-
-    if (!isEmailValid)
-      return res
-        .status(400)
-        .json({
-          success: false, message: "Invalid email, The email entered is not registered", data: {
-            stage: 0,
-          }
-        });
-
-
-    const accountVerfied = await Model.User.findOneAndUpdate(
-      { _id: isEmailValid._id },
-      { $set: { is_verified: true } }
-    );
-
-    return res.ok("Account verified successfully", accountVerfied);
-  }),
-
 
   login: async (req, res, next) => {
     try {

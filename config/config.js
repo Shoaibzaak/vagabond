@@ -1,4 +1,4 @@
-var port = 3001;
+var port = 3000;
 const tokenSecret = "icanttakeitanymore";
 module.exports = {
   port: port,
