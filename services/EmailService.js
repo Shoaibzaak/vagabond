@@ -12,36 +12,36 @@ var transporter = nodeMailer.createTransport({
   },
 });
 let from = "no-reply <vagabond.co.usa>"
-const emailTemplate = fs.readFileSync('./emailTemplates/otpVerification.html', 'utf-8');
-// var readHTMLFile = function (path, callback) {
-// 	fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
-// 	  if (err) {
-// 	    callback(err);
-// 	  } else {
-// 	    callback(null, html);
-// 	  }
-// 	});
-// };
 
-exports.sendEmail = async function ( replacements, to, subject) {
-	// readHTMLFile("./emailTemplates/" + tempateName+".html", async function (err, html) {
-	// 	if (err) {
-	// 		console.log(err);
-	// 		return;
-	// 	}
+var readHTMLFile = function (path, callback) {
+	fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
+	  if (err) {
+	    callback(err);
+	  } else {
+	    callback(null, html);
+	  }
+	});
+};
+
+exports.sendEmail = async function (tempateName, replacements, to, subject) {
+	readHTMLFile("./emailTemplates/" + tempateName+".html", async function (err, html) {
+		if (err) {
+			console.log(err);
+			return;
+		}
    
-	//   	var template = await handlebars.compile(html);
-	//   	htmlToSend = template(replacements);
+	  	var template = await handlebars.compile(html);
+	  	htmlToSend = template(replacements);
 	  	await transporter.sendMail({
 			from: from, // sender address e.g. no-reply@xyz.com or "Fred Foo 👻" <foo@example.com>
 			to: to, // list of receivers e.g. bar@example.com, baz@example.com
 			subject: subject, // Subject line e.g. 'Hello ✔'
-			html: emailTemplate.replace('{otp}', replacements) // html body e.g. '<b>Hello world?</b>'
+			html: htmlToSend // html body e.g. '<b>Hello world?</b>'
 		}).then((info) => {
 			console.log(info);
 		}).catch((err) => {
 			console.log(err);
 		});
-	// });
+	});
 }
 

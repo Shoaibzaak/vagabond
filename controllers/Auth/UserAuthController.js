@@ -38,7 +38,7 @@ module.exports = {
       let otpCode = {
         otp
       }
-      await Services.EmailService.sendEmail( otpCode, email, "User Account Email Verification | vagabond")
+      await Services.EmailService.sendEmail("otpVerification", otpCode, email, "User Account Email Verification | vagabond")
       return res.ok("Registration successful. A verification code has been sent to your email.", User);
     } catch (err) {
       next(err);
