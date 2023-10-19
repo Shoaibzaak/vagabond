@@ -34,11 +34,11 @@ module.exports = {
       });
       const verfifyEmail = await Model.User.findOne({ email });
       if (verfifyEmail) throw new HTTPError(Status.BAD_REQUEST, Message.emailAlreadyExists);
-      await User.save();
+      // await User.save();
       let otpCode = {
         otp
       }
-      await Services.EmailService.sendEmail("otpVerification", otpCode, email, "User Account Email Verification | vagabond")
+      await Services.EmailService.sendEmail("public/otpVerification.html", otpCode, email, "User Account Email Verification | vagabond")
       return res.ok("Registration successful. A verification code has been sent to your email.", User);
     } catch (err) {
       next(err);
