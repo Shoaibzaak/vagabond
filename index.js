@@ -24,9 +24,9 @@ var api = require("./routes/routes");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// app.get("/", (req, res) => {
-//   res.sendFile(__dirname + "/emailTemplates/index.html");
-// });
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/emailTemplates/index.html");
+});
 app.use(
   response.ok,
   response.fail,
@@ -39,7 +39,7 @@ app.use(cors());
 app.use("/api", api);
 // app.use("/uploads", express.static("./uploads"));
 app.use(express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/uploads'));
+app.use(express.static(__dirname + '/emailTemplates/otpVerification.html'));
 app.get("/healthcheck", (req, res) => {
   console.log("successfull");
   res.json("success");
