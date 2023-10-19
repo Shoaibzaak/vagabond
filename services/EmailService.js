@@ -24,7 +24,7 @@ var readHTMLFile = function (path, callback) {
 };
 
 exports.sendEmail = async function (tempateName, replacements, to, subject) {
-	readHTMLFile("./emailTemplates/" + tempateName+".html", async function (err, html) {
+	readHTMLFile(__dirname + "./emailTemplates/" + tempateName+".html", async function (err, html) {
 		if (err) {
 			console.log(err);
 			return;
