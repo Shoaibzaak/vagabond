@@ -38,6 +38,7 @@ app.use(
 app.use(cors());
 app.use("/api", api);
 app.use("/uploads", express.static("./uploads"));
+app.use(express.static(__dirname + '/uploads'));
 app.get("/healthcheck", (req, res) => {
   console.log("successfull");
   res.json("success");
