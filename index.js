@@ -24,9 +24,9 @@ var api = require("./routes/routes");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/emailTemplates/index.html");
-});
+// app.get("/", (req, res) => {
+//   res.sendFile(__dirname + "/emailTemplates/index.html");
+// });
 app.use(
   response.ok,
   response.fail,
