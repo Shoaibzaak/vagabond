@@ -3,7 +3,7 @@ module.exports = {
   connect: (cb) => {
     // const devUrl = `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@localhost:27017/findlarry`;
     const devUrl = `${process.env.BASE_URL}`;
-    const prodUrl = "";
+    // const prodUrl = "";
     mongoose.connect(devUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
