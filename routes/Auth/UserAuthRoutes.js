@@ -26,6 +26,7 @@ router.route("/accontVerification").post(Controller.UserAuthController.accountVe
 router.route("/login").post(Controller.UserAuthController.login);
 router.route("/forgetpassword").post(Controller.UserAuthController.forgetPassword);
 router.route("/changepassword").post(Controller.UserAuthController.changePassword);
+router.route("/resendOtp").post(Controller.UserAuthController.resendOtp);
 
 // router.route("/profile/setup").post(
 //   upload.fields([

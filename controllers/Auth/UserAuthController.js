@@ -50,6 +50,10 @@ module.exports = {
       const { email, password } = req.body;
       if (!email || !password)
         throw new HTTPError(Status.BAD_REQUEST, Message.required);
+        // Email validation
+        if (!Validation.validateEmail(email)) {
+          return res.badRequest("Invalid email format");
+        }
       let user
       user = await Model.User.findOne({ email })
       if (!user) throw new HTTPError(Status.NOT_FOUND, Message.userNotFound);
@@ -116,84 +120,31 @@ module.exports = {
     return res.ok("Account verified successfully", userData);
   }),
 
+  //resend otp to email
+  resendOtp: catchAsync(async (req, res, next) => {
+    const { email } = req.body;
+    if (!email)
+      throw new HTTPError(Status.BAD_REQUEST, Message.required);
+    if (!Validation.validateEmail(email)) {
+      return res.badRequest("Invalid email format");
+    }
+    const otp = otpService.issue();
+    const otpExpiryCode = moment().add(10, "minutes").valueOf();
+    if (email) {
+      await Model.User.findOneAndUpdate({ email: email }, { $set: { otp: otp, otpExpiry: otpExpiryCode } });
+    }
+    let otpCode = {
+      otp
+    }
+    // const token =  Services.JwtService.issue({
+    //   id: Services.HashService.encrypt(user._id),
+    // })
+    // console.log(token)
+    await Services.EmailService.sendEmail("public/otpVerification.html", otpCode, email, "Reset Password | In VAGABOND");
+    return res.ok("Reset password otp has been sent to your registered email.");
 
-  // socialSignIn: catchAsync(async (req, res, next) => {
-  //   const { googleId, facebookId, fullname, email, deviceId } = req.body;
-  //   if (!email) return res.badRequest(Message.badRequest);
-  //   if (!googleId && !facebookId) return res.badRequest(Message.badRequest);
 
-  //   let user = await Model.User.findOne({ email: email.toLowerCase() });
-  //   let business = await Model.BusinessUser.findOne({
-  //     email: email.toLowerCase(),
-  //   });
-
-  //   let updateObj = {};
-  //   if (googleId) updateObj.googleId = googleId;
-  //   if (facebookId) updateObj.facebookId = facebookId;
-  //   if (deviceId) updateObj.deviceId = deviceId;
-
-  //   if (user) {
-  //     user = await Model.User.findOneAndUpdate(
-  //       { _id: user._id },
-  //       { $set: updateObj }
-  //     );
-  //   } else if (business) {
-  //     business = await Model.BusinessUser.findOneAndUpdate(
-  //       { _id: business._id },
-  //       { $set: updateObj }
-  //     );
-  //   } else {
-  //     //const otp = Services.OtpService.issue();
-  //     let userOtpExist = await Model.UserOTP.findOne({ email: email.toLowerCase() });
-  //     const otp = "123456";
-
-  //     if (!userOtpExist) {
-  //       const expiredIn = moment().add(15, "minutes").valueOf();
-  //       const userOtp = new Model.UserOTP({
-  //         googleId,
-  //         facebookId,
-  //         fullname,
-  //         email,
-  //         otp,
-  //         expiredIn,
-  //         isVerified: true,
-  //         stage: 2
-  //       });
-  //       await userOtp.save();
-  //     }
-
-  //   }
-
-  //   if (user) {
-  //     const token = `GHA ${Services.JwtService.issue({
-  //       id: Services.HashService.encrypt(user._id),
-  //     })}`;
-  //     return res.ok("Log in successful", {
-  //       token,
-  //       user,
-  //     });
-  //   } else if (business) {
-  //     const token = `GHA ${Services.JwtService.issue({
-  //       id: Services.HashService.encrypt(business._id),
-  //     })}`;
-  //     return res.ok("Log in successful", {
-  //       token,
-  //       business,
-  //     });
-  //   } else {
-  //     let q_user = await Model.UserOTP.findOne({
-  //       email: email.toLowerCase(),
-  //     });
-  //     const token = `GHA ${Services.JwtService.issue({
-  //       id: Services.HashService.encrypt(q_user._id),
-  //     })}`;
-  //     q_user = { ...q_user._doc, token, password: null };
-
-  //     return res
-  //       .status(400)
-  //       .json({ success: false, message: "Profile setup is pending", data: { user: q_user } });
-  //   }
-  // }),
+  }),
 
   forgetPassword: catchAsync(async (req, res, next) => {
     const { email } = req.body;
@@ -202,11 +153,11 @@ module.exports = {
     user = await Model.User.findOne({ email });
 
     if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
-    // if (user.isEmailConfirmed == false) throw new HTTPError(Status.BAD_REQUEST, "Your account is not verfied");
+    if (user.isEmailConfirmed == false) throw new HTTPError(Status.BAD_REQUEST, "Your account is not verfied");
     const otp = otpService.issue();
     const otpExpiryCode = moment().add(10, "minutes").valueOf();
     if (user) {
-      await Model.User.findOneAndUpdate({ _id: user._id }, { $set: { otp:otp,otpExpiry:otpExpiryCode} });
+      await Model.User.findOneAndUpdate({ _id: user._id }, { $set: { otp: otp, otpExpiry: otpExpiryCode } });
     }
     let otpCode = {
       otp
@@ -228,7 +179,7 @@ module.exports = {
         message: Message.badRequest,
         data: null,
       });
-      const now = moment().valueOf();
+    const now = moment().valueOf();
     let user;
     user = await Model.User.findOne({ otp });
     if (user) {
@@ -243,10 +194,10 @@ module.exports = {
         message: Message.passwordTooWeak,
         data: null,
       });
-      if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
-      else if (user.otpExpiry < now) throw new HTTPError(Status.BAD_REQUEST, "OTP expired");
-      else if (user.isEmailConfirmed) throw new HTTPError(Status.BAD_REQUEST, "Account already verified");
-      else if (parseInt(user.otp) !== parseInt(otp)) throw new HTTPError(Status.BAD_REQUEST, "Invalid OTP");
+    if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
+    else if (user.otpExpiry < now) throw new HTTPError(Status.BAD_REQUEST, "OTP expired");
+    else if (user.isEmailConfirmed) throw new HTTPError(Status.BAD_REQUEST, "Account already verified");
+    else if (parseInt(user.otp) !== parseInt(otp)) throw new HTTPError(Status.BAD_REQUEST, "Invalid OTP");
 
     encrypt.compare(currentPassword, user.password, (err, match) => {
       if (match) {
@@ -256,8 +207,8 @@ module.exports = {
             if (user) {
               await Model.User.findOneAndUpdate(
                 { _id: user._id },
-                { $set: { password: hash },$unset: { otp: 1, otpExpiry: 1 } },
-                
+                { $set: { password: hash }, $unset: { otp: 1, otpExpiry: 1 } },
+
               );
               const token = `GHA ${Services.JwtService.issue({
                 id: Services.HashService.encrypt(user._id),
