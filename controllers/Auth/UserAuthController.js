@@ -170,18 +170,18 @@ module.exports = {
     return res.ok("Reset password otp has been sent to your registered email.");
 
   }),
-
-  changePassword: catchAsync(async (req, res, next) => {
-    const { otp, currentPassword, newPassword } = req.body;
-    if (!otp || !currentPassword || !newPassword)
+  updatePassword: catchAsync(async (req, res, next) => {
+    const { otp,newPassword } = req.body;
+    if (!otp ||!newPassword)
       return res.status(400).json({
         success: false,
         message: Message.badRequest,
         data: null,
       });
-    const now = moment().valueOf();
     let user;
     user = await Model.User.findOne({ otp });
+    //User not found
+    if (!user) throw new HTTPError(Status.NOT_FOUND, Message.userNotFound);
     if (user) {
     }
     if (
@@ -194,10 +194,51 @@ module.exports = {
         message: Message.passwordTooWeak,
         data: null,
       });
-    if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
-    else if (user.otpExpiry < now) throw new HTTPError(Status.BAD_REQUEST, "OTP expired");
-    else if (user.isEmailConfirmed) throw new HTTPError(Status.BAD_REQUEST, "Account already verified");
-    else if (parseInt(user.otp) !== parseInt(otp)) throw new HTTPError(Status.BAD_REQUEST, "Invalid OTP");
+      encrypt.genSalt(10, (error, salt) => {
+        if (error) return console.log(error);
+        encrypt.hash(newPassword, salt, async (error, hash) => {
+          if (user) {
+            await Model.User.findOneAndUpdate(
+              { _id: user._id },
+              { $set: { password: hash }, $unset: { otp: 1, otpExpiry: 1 } },
+
+            );
+            // const token = `GHA ${Services.JwtService.issue({
+            //   id: Services.HashService.encrypt(user._id),
+            // })}`;
+            user = { ...user._doc, usertype: "User" };
+            return res.ok("Password updated successfully", user);
+          }
+        });
+      });
+    
+  }),
+
+  changePassword: catchAsync(async (req, res, next) => {
+    const { email, currentPassword, newPassword } = req.body;
+    if (!email|| !currentPassword || !newPassword)
+      return res.status(400).json({
+        success: false,
+        message: Message.badRequest,
+        data: null,
+      });
+    let user;
+    user = await Model.User.findOne({ email });
+    //User not found
+    if (!user) throw new HTTPError(Status.NOT_FOUND, Message.userNotFound);
+    if (user) {
+    }
+    if (
+      !validatePassword({
+        password: newPassword,
+      })
+    )
+      return res.status(400).json({
+        success: false,
+        message: Message.passwordTooWeak,
+        data: null,
+      });
+    
 
     encrypt.compare(currentPassword, user.password, (err, match) => {
       if (match) {

@@ -27,6 +27,7 @@ router.route("/login").post(Controller.UserAuthController.login);
 router.route("/forgetpassword").post(Controller.UserAuthController.forgetPassword);
 router.route("/changepassword").post(Controller.UserAuthController.changePassword);
 router.route("/resendOtp").post(Controller.UserAuthController.resendOtp);
+router.route("/updatePassword").post(Controller.UserAuthController.updatePassword);
 
 // router.route("/profile/setup").post(
 //   upload.fields([
