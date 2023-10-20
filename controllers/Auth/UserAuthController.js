@@ -198,30 +198,39 @@ module.exports = {
   forgetPassword: catchAsync(async (req, res, next) => {
     const { email } = req.body;
     if (!email) return res.badRequest(Message.badRequest);
-
     let user;
-
-
     user = await Model.User.findOne({ email });
+
+    if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
+    // if (user.isEmailConfirmed == false) throw new HTTPError(Status.BAD_REQUEST, "Your account is not verfied");
+    const otp = otpService.issue();
+    const otpExpiryCode = moment().add(10, "minutes").valueOf();
+    if (user) {
+      await Model.User.findOneAndUpdate({ _id: user._id }, { $set: { otp:otp,otpExpiry:otpExpiryCode} });
+    }
+    let otpCode = {
+      otp
+    }
+    // const token =  Services.JwtService.issue({
+    //   id: Services.HashService.encrypt(user._id),
+    // })
+    // console.log(token)
+    await Services.EmailService.sendEmail("public/otpResetPass.html", otpCode, email, "Reset Password | In VAGABOND");
+    return res.ok("Reset password otp has been sent to your registered email.");
 
   }),
 
   changePassword: catchAsync(async (req, res, next) => {
-    const { email, currentPassword, newPassword } = req.body;
-    if (!email || !currentPassword || !newPassword)
+    const { otp, currentPassword, newPassword } = req.body;
+    if (!otp || !currentPassword || !newPassword)
       return res.status(400).json({
         success: false,
         message: Message.badRequest,
         data: null,
       });
-
-    // Email validation
-    if (!Validation.validateEmail(email)) {
-      return res.badRequest("Invalid email format");
-    }
-
+      const now = moment().valueOf();
     let user;
-    user = await Model.User.findOne({ email });
+    user = await Model.User.findOne({ otp });
     if (user) {
     }
     if (
@@ -234,6 +243,11 @@ module.exports = {
         message: Message.passwordTooWeak,
         data: null,
       });
+      if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
+      else if (user.otpExpiry < now) throw new HTTPError(Status.BAD_REQUEST, "OTP expired");
+      else if (user.isEmailConfirmed) throw new HTTPError(Status.BAD_REQUEST, "Account already verified");
+      else if (parseInt(user.otp) !== parseInt(otp)) throw new HTTPError(Status.BAD_REQUEST, "Invalid OTP");
+
     encrypt.compare(currentPassword, user.password, (err, match) => {
       if (match) {
         encrypt.genSalt(10, (error, salt) => {
@@ -242,7 +256,8 @@ module.exports = {
             if (user) {
               await Model.User.findOneAndUpdate(
                 { _id: user._id },
-                { $set: { password: hash } }
+                { $set: { password: hash },$unset: { otp: 1, otpExpiry: 1 } },
+                
               );
               const token = `GHA ${Services.JwtService.issue({
                 id: Services.HashService.encrypt(user._id),
@@ -261,5 +276,5 @@ module.exports = {
   }),
 
 
- 
+
 };
