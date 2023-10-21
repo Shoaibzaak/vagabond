@@ -91,14 +91,14 @@ module.exports = {
     }
   },
   accountVerification: catchAsync(async (req, res, next) => {
-    const { userId, otp } = req.body;
-    if (!otp || !userId)
+    const {  otp } = req.body;
+    if (!otp )
       throw new HTTPError(Status.BAD_REQUEST, Message.required);
 
     const now = moment().valueOf();
     let user;
-    if (userId) {
-      user = await Model.User.findOne({ _id: userId })
+    if (otp) {
+      user = await Model.User.findOne({otp: otp })
     }
 
     else {
@@ -112,8 +112,8 @@ module.exports = {
 
 
     let userData = {};
-    if (userId) {
-      await Model.User.findOneAndUpdate({ _id: userId }, { $set: { isEmailConfirmed: true }, $unset: { otp: 1, otpExpiry: 1 } });
+    if (otp) {
+      await Model.User.findOneAndUpdate({ otp: otp }, { $set: { isEmailConfirmed: true }, $unset: { otp: 1, otpExpiry: 1 } });
     }
 
     userData = {
