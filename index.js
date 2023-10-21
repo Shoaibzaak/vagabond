@@ -7,7 +7,7 @@ var connection = require("./connection/connection").connect;
 var app = express();
 var server = require("http").createServer(app);
 var passport = require('passport');
-var initPassport=require("./intipassport")
+// var initPassport=require("./intipassport")
 
 // var io = require("socket.io")(server,{
 //   cors: {
@@ -25,7 +25,7 @@ const logger = require("./services/LoggerService");
 
 var api = require("./routes/routes");
 //init passport
-initPassport(app);
+// initPassport(app);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.get("/", (req, res) => {
@@ -54,20 +54,20 @@ app.get("/healthcheck", (req, res) => {
 });
 
 // will go access 3rd party to get permission to access the data
-app.get("/api/auth/user/login/google", passport.authenticate("google", { scope: ["profile", "email"] })); //define this scope to have access to the email
+// app.get("/api/auth/user/login/google", passport.authenticate("google", { scope: ["profile", "email"] })); //define this scope to have access to the email
 
 
 
-app.get(
-  "/api/auth/user/login/google/callback",
-  passport.authenticate("google", { failureRedirect: "/auth/google" }),
-  // Redirect user back to the mobile app using deep linking
-  (req, res) => {
-    res.redirect(
-      `memcaps://app/login?email=${req.user.email}`
-    );
-  }
-);
+// app.get(
+//   "/api/auth/user/login/google/callback",
+//   passport.authenticate("google", { failureRedirect: "/auth/google" }),
+//   // Redirect user back to the mobile app using deep linking
+//   (req, res) => {
+//     res.redirect(
+//       `memcaps://app/login?email=${req.user.email}`
+//     );
+//   }
+// );
 //error handling middleware
 const errorHandler = (error, req, res, next) => {
   const status = error.status || 500;
