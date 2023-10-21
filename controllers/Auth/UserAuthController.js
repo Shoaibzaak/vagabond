@@ -34,7 +34,7 @@ module.exports = {
       });
       const verfifyEmail = await Model.User.findOne({ email });
       if (verfifyEmail) throw new HTTPError(Status.BAD_REQUEST, Message.emailAlreadyExists);
-      await User.save();
+      // await User.save();
       let otpCode = {
         otp
       }
