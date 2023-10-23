@@ -92,8 +92,8 @@ module.exports = {
     },
 
     findPinById: async (query) => {
-        console.log("findPinById HelperFunction is called");
-
+        console.log("findPinById HelperFunction is called",query);
+    
         const Pin = await Model.Pin.findOne(query.critarion)
             // .populate({
             //     path: 'PinSubscription', populate: {

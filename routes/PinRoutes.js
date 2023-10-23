@@ -33,6 +33,12 @@ router.route("/updatePin").post(
   Authentication.UserAuth,
   Controller.PinController.updatePin);
 
+//delete pin
+router.route("/deletePin/:id").delete(
+  Authentication.UserAuth,
+  Controller.PinController.declinePin);  
+  
+
 // get pin by id
 router.route("/findPinById/:id").get(
   Authentication.UserAuth,

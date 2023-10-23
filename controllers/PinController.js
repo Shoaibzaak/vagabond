@@ -34,7 +34,7 @@ module.exports = {
             var pinId = req.params.id;
             console.log(pinId)
 
-            var result = await PinHelper.findPinById({_id:pinId});
+            var result = await PinHelper.findPinById(pinId);
 
             var message = "PinId found successfully";
             if (result == null) {
@@ -132,12 +132,10 @@ module.exports = {
     }),
 
     // Delete a Pin user
-    declinePinUser: catchAsync(async (req, res, next) => {
-        var PinData = req.body;
+    declinePin: catchAsync(async (req, res, next) => {
+        var PinId = req.params.id
         try {
-            const PinUser = await Pin.findOneAndDelete({
-                _id: PinData.PinUserId,
-            });
+            const PinUser = await Model.Pin.findOneAndDelete(PinId)
             if (!PinUser)
                 return res.badRequest("Pin  Not Found in our records");
             var message = "Pin user deleted successfully";
