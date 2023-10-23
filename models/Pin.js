@@ -5,19 +5,33 @@ const PinModel = new Schema(
   {
     place: {
       type: String,
+      default:""
     },
     zipCode: {
       type: Number,
     },
     city: {
       type: String,
+      default:""
     },
     state: {
       type: String,
+      default:""
     },
     description: {
       type: String,
     },
+    pinDate:{
+      type:Date
+    },
+    pinType:{
+      type:String,
+      enum: ["PUBLICE", "PRIVATE"],
+      default: "PRIVATE", 
+    },
+    images: [{type:String}],
+    userId:{type: mongoose.Schema.Types.ObjectId,ref: "User"},
+    required: true,
     
   },
 
