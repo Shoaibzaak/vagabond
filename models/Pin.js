@@ -5,7 +5,7 @@ const PinModel = new Schema(
   {
     place: {
       type: String,
-      default:""
+      required:true
     },
     zipCode: {
       type: Number,

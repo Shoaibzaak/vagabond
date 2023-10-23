@@ -102,7 +102,7 @@ module.exports = {
     }
 
     else {
-      throw new HTTPError(Status.BAD_REQUEST, "Id is required");
+      throw new HTTPError(Status.BAD_REQUEST, "otp is required");
     }
 
     if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
