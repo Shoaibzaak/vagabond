@@ -6,7 +6,7 @@ const UserModel = new Schema(
   {
     fullName: {
       type: String,
-      default: "",
+      required: true,
     },
     email: {
       type: String,
