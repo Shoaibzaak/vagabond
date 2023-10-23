@@ -44,25 +44,25 @@ module.exports = {
 
     },
 
-    getPinList: async (sortProperty, sortOrder = -1, offset = 0, limit = 100000, query) => {
-        console.log("getPin Model Function called")
+    // getPinList: async (sortProperty, sortOrder = -1, offset = 0, limit = 100000, query) => {
+    //     console.log("getPin Model Function called")
 
-        const Pins = await Model.Pin.find(query.critarion).select(query.fields/* '_id HotelName' */)
+    //     const Pins = await Model.Pin.find(query.critarion).select(query.fields/* '_id HotelName' */)
 
-            .sort({ [sortProperty]: sortOrder })
-            .skip(offset)
-            .limit(limit);
+    //         .sort({ [sortProperty]: sortOrder })
+    //         .skip(offset)
+    //         .limit(limit);
 
-        const PinSize = Pins.length
+    //     const PinSize = Pins.length
 
-        return {
-            Pins: Pins,
-            count: PinSize,
-            offset: offset,
-            limit: limit
-        };
+    //     return {
+    //         Pins: Pins,
+    //         count: PinSize,
+    //         offset: offset,
+    //         limit: limit
+    //     };
 
-    },
+    // },
 
 
     updatePin: async (data) => {

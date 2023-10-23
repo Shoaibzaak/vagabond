@@ -30,8 +30,7 @@ const PinModel = new Schema(
       default: "PRIVATE", 
     },
     images: [{type:String}],
-    userId:{type: mongoose.Schema.Types.ObjectId,ref: "User"},
-    required: true,
+    userId:{type: mongoose.Schema.Types.ObjectId,ref: "User",required:true},
     
   },
 
