@@ -169,18 +169,18 @@ module.exports = {
     encrypt.genSalt(10, (error, salt) => {
       if (error) return console.log(error);
       encrypt.hash(tempPassword, salt, async (error, hash) => {
-        if (user) {
-          await Model.User.findOneAndUpdate(
-            { _id: user._id },
-            { $set: { password: hash, otp:otp , otpExpiry: otpExpiryCode  },  },
+        // if (user) {
+        //   await Model.User.findOneAndUpdate(
+        //     { _id: user._id },
+        //     { $set: { password: hash, otp:otp , otpExpiry: otpExpiryCode  },  },
 
-          );
-          // const token = `GHA ${Services.JwtService.issue({
-          //   id: Services.HashService.encrypt(user._id),
-          // })}`;
-          // user = { ...user._doc, usertype: "User" };
-          // return res.ok("Password updated successfully and", user);
-        }
+        //   );
+        //   // const token = `GHA ${Services.JwtService.issue({
+        //   //   id: Services.HashService.encrypt(user._id),
+        //   // })}`;
+        //   // user = { ...user._doc, usertype: "User" };
+        //   // return res.ok("Password updated successfully and", user);
+        // }
       });
     });
 
@@ -189,7 +189,7 @@ module.exports = {
     //   await Model.User.findOneAndUpdate({ _id: user._id }, { $set: { otp: otp, otpExpiry: otpExpiryCode } });
     // }
     let replacements = {
-      otp,
+      // otp,
       tempPassword,
     }
     // const token =  Services.JwtService.issue({
@@ -197,7 +197,7 @@ module.exports = {
     // })
     // console.log(token)
     await Services.EmailService.sendEmail("public/otpResetPass.html", replacements, email, "Forget Password | In VAGABOND");
-    return res.ok("Temporary password and verification otp has been sent to your registered email.");
+    return res.ok("Temporary password  has been sent to your registered email.");
 
   }),
   updatePassword: catchAsync(async (req, res, next) => {

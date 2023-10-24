@@ -16,13 +16,27 @@ const userStorage = multer.diskStorage({
     );
   },
 });
-const upload = multer({ storage: userStorage });
+
+var upload = multer({ //multer settings
+  storage: userStorage,
+  fileFilter: function (req, file, callback) {
+    var ext = path.extname(file.originalname);
+    if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+      return callback(new Error('Only images are allowed'))
+    }
+    callback(null, true)
+  },
+  limits: {
+    fileSize: 1024 * 1024
+  }
+})
+
 //post custom pin 
 router.route("/createPin").post(
   upload.fields([
     {
       name: "images",
-      maxCount: 1,
+      maxCount: 10,
     },
   ]),
   Authentication.UserAuth,
@@ -36,8 +50,8 @@ router.route("/updatePin").post(
 //delete pin
 router.route("/deletePin/:id").delete(
   Authentication.UserAuth,
-  Controller.PinController.declinePin);  
-  
+  Controller.PinController.declinePin);
+
 
 // get pin by id
 router.route("/findPinById/:id").get(

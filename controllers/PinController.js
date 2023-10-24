@@ -52,9 +52,11 @@ module.exports = {
         console.log("createPin is called");
         try {
             var PinData = req.body;
+            PinData.images = []
             if (req.files) {
-                if (req.files.images && req.files.images.length > 0) {
-                    PinData.images = `public/images/${req.files.images[0].filename}`;
+                for (let i = 0; i < req.files.images.length; i++) {
+                    PinData.images.push(`public/images/${req.files.images[i].originalname}`)
+
                 }
             }
             var result = await PinHelper.createPin(PinData);

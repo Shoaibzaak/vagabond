@@ -1,4 +1,4 @@
- require("dotenv").config();
+require("dotenv").config();
 var express = require("express");
 var bodyParser = require("body-parser");
 var cors = require("cors");
@@ -7,7 +7,9 @@ var connection = require("./connection/connection").connect;
 var app = express();
 var server = require("http").createServer(app);
 var passport = require('passport');
-// var initPassport=require("./intipassport")
+const session = require("express-session")
+//  var initPassport=require("./intipassport")
+ require('./intipassport')
 
 // var io = require("socket.io")(server,{
 //   cors: {
@@ -42,7 +44,22 @@ app.use(
 app.use(cors());
 
 //Passport Initialized
+//Setting up cookies
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: "shoa@12",
+  cookie:{secure:false}
+}))
 
+//Logged In Middleware
+const isLoggedIn = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.sendStatus(401);
+  }
+}
 
 //Setting Up Session
 app.use("/api", api);
@@ -52,22 +69,24 @@ app.get("/healthcheck", (req, res) => {
   console.log("successfull");
   res.json("success");
 });
+app.get('/failed', (req, res) => res.send('You Failed to log in!'))
+app.get('/good', (req, res) => {
+ console.log(req.user,'routing to the good routes')
 
+})
 // will go access 3rd party to get permission to access the data
-// app.get("/api/auth/user/login/google", passport.authenticate("google", { scope: ["profile", "email"] })); //define this scope to have access to the email
+app.get("/api/auth/user/login/google", passport.authenticate("google", { scope: ["profile", "email"] })); //define this scope to have access to the email
 
 
 
-// app.get(
-//   "/api/auth/user/login/google/callback",
-//   passport.authenticate("google", { failureRedirect: "/auth/google" }),
-//   // Redirect user back to the mobile app using deep linking
-//   (req, res) => {
-//     res.redirect(
-//       `memcaps://app/login?email=${req.user.email}`
-//     );
-//   }
-// );
+app.get(
+  "/api/auth/user/login/google/callback",
+  passport.authenticate("google", { failureRedirect: "/failed" }),
+  // Redirect user back to the mobile app using deep linking
+  (req, res) => {
+    res.redirect('/good');
+  }
+);
 //error handling middleware
 const errorHandler = (error, req, res, next) => {
   const status = error.status || 500;
