@@ -3,7 +3,7 @@ const Model = require("../models/index");
 const validatePassword = async (payload) => {
   const { password, userId, businessId } = payload;
   const match =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+  /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(
       password
     );
 
