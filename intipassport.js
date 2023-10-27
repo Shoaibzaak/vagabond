@@ -2,15 +2,16 @@ var passport=require("passport")
 var GoogleStrategy=require("passport-google-oauth20")
 var google=require('./passportconfig')
 const session=require("express-session")
+const Model=require("./models/index")
  const initPassport = (app) => {
   //init's the app session
-  app.use(
-    session({
-      resave: false,
-      saveUninitialized: true,
-      secret: "shoa@12",
-    })
-  );
+  // app.use(
+  //   session({
+  //     resave: false,
+  //     saveUninitialized: true,
+  //     secret: "shoa@12",
+  //   })
+  // );
   //init passport
   app.use(passport.initialize());
   app.use(passport.session());
@@ -22,29 +23,44 @@ passport.use(
   new GoogleStrategy(
     google,
     async (accessToken, refreshToken, profile, done) => {
-      console.log(profile);
-      //done(err, user) will return the user we got from fb
-      done(null, formatGoogle(profile._json));
+      console.log(profile,'profile========>')
+          const email=profile._json.email
+          const id=profile._json.sub
+          const fullName=profile._json.name
+      const currentUser = await Model.User.findOne({
+        email,
+      });
+      if (!currentUser) {
+        const newUser = new Model.User({
+          email:email,
+          fullName:fullName,
+          googleId:id,
+          accessToken
+        });
+        await newUser.save()
+        return done(null, newUser);
+      }
+      return done(null, currentUser);
     }
+
+    
   )
 );
 
 ////////// Serialize/Deserialize //////////
 
-// Serialize user into the sessions
-passport.serializeUser((user, done) => done(null, user));
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
 
-// Deserialize user from the sessions
-passport.deserializeUser((user, done) => done(null, user));
+passport.deserializeUser(async (id, done) => {
+  const currentUser = await Model.User.findOne({
+    id,
+  });
+  done(null, currentUser);
+});
 
-////////// Format data//////////
 
-const formatGoogle = (profile) => {
-  return {
-    fullName:profile.fullName,
-    email: profile.emaiL
-  };
-};
 module.exports=initPassport
 
 // const passport  = require('passport');

@@ -53,13 +53,13 @@ app.use(session({
 }))
 
 //Logged In Middleware
-const isLoggedIn = (req, res, next) => {
-  if (req.user) {
-    next();
-  } else {
-    res.sendStatus(401);
-  }
-}
+// const isLoggedIn = (req, res, next) => {
+//   if (req.user) {
+//     next();
+//   } else {
+//     res.sendStatus(401);
+//   }
+// }
 
 //Setting Up Session
 app.use("/api", api);
@@ -70,17 +70,17 @@ app.get("/healthcheck", (req, res) => {
   res.json("success");
 });
 app.get('/failed', (req, res) => res.send('You Failed to log in!'))
-app.get('/good', (req, res) => {
- console.log(req.user,'routing to the good routes')
+app.get('/good',(req, res) => {
+ res.send(req.user,'is the authentcated user ')
 
 })
 // will go access 3rd party to get permission to access the data
-app.get("/api/auth/user/login/google", passport.authenticate("google", { scope: ["profile", "email"] })); //define this scope to have access to the email
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] })); //define this scope to have access to the email
 
 
 
 app.get(
-  "/api/auth/user/login/google/callback",
+  "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/failed" }),
   // Redirect user back to the mobile app using deep linking
   (req, res) => {
