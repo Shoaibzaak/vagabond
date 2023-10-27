@@ -58,6 +58,11 @@ router.route("/findPinById/:id").get(
   Authentication.UserAuth,
   Controller.PinController.getPinUser);
 
+  // get all  pins with details
+router.route("/getAllPins").post(
+  Authentication.UserAuth,
+  Controller.PinController.getAllPinUsers);
+
 
 
 module.exports = router;

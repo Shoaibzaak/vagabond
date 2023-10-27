@@ -170,11 +170,11 @@ module.exports = {
       if (error) return console.log(error);
       encrypt.hash(tempPassword, salt, async (error, hash) => {
         // if (user) {
-        //   await Model.User.findOneAndUpdate(
-        //     { _id: user._id },
-        //     { $set: { password: hash, otp:otp , otpExpiry: otpExpiryCode  },  },
+          await Model.User.findOneAndUpdate(
+            { _id: user._id },
+            { $set: { password: hash },  },
 
-        //   );
+          );
         //   // const token = `GHA ${Services.JwtService.issue({
         //   //   id: Services.HashService.encrypt(user._id),
         //   // })}`;

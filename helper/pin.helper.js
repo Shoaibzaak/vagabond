@@ -20,15 +20,7 @@ module.exports = {
     getPinWithFullDetails: async (sortProperty, sortOrder = -1, offset = 0, limit = 100000, query) => {
         console.log("getPin Model Function called")
 
-        const Pins = await Model.Pin.find(query.critarion)
-
-            // .populate({
-            //     path: 'PinSubscription', 
-            //     populate: {
-            //         path: "subscriptionId"
-            //     },
-            // })
-            //     .populate('sectors.sector')
+        const Pins = await Model.Pin.find().populate('userId')
             .sort({ [sortProperty]: sortOrder })
             .skip(offset)
             .limit(limit);
