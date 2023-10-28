@@ -66,7 +66,7 @@ module.exports = {
                 message = "Pin does not exist.";
             }
 
-            return responseHelper.success(res, PinData, message);
+            return responseHelper.success(res, result, message);
         } catch (error) {
             responseHelper.requestfailure(res, error);
         }

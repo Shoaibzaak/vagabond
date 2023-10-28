@@ -310,7 +310,7 @@ module.exports = {
               message = "contact does not exist.";
           }
 
-          return responseHelper.success(res, contactData, message);
+          return responseHelper.success(res, result, message);
       } catch (error) {
           responseHelper.requestfailure(res, error);
       }
