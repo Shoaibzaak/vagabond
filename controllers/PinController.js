@@ -53,7 +53,7 @@ module.exports = {
         try {
             var PinData = req.body;
             PinData.images = []
-            if (req.files) {
+            if (Array.isArray(req.files.images)) {
                 for (let i = 0; i < req.files.images.length; i++) {
                     PinData.images.push(`public/images/${req.files.images[i].originalname}`)
 
