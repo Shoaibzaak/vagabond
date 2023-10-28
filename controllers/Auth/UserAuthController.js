@@ -9,8 +9,9 @@ const moment = require("moment");
 const catchAsync = require("../../utils/catchAsync");
 const referralCodes = require("referral-codes");
 const encrypt = require("bcrypt");
+const responseHelper = require("../../helper/response.helper");
 const validatePassword = require("../../utils/validatePassword");
-
+const userHelper=require('../../helper/user.helper')
 module.exports = {
   register: async (req, res, next) => {
     try {
@@ -296,7 +297,24 @@ module.exports = {
 
     })
   }),
+    // Create a new Contact User
+    createContact: catchAsync(async (req, res, next) => {
+      console.log("createContact is called");
+      try {
+          var contactData = req.body;
+         
+          var result = await userHelper.createContact(contactData);
 
+          var message = "contact created successfully";
+          if (result == null) {
+              message = "contact does not exist.";
+          }
+
+          return responseHelper.success(res, contactData, message);
+      } catch (error) {
+          responseHelper.requestfailure(res, error);
+      }
+  }),
 
 
 };

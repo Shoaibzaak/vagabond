@@ -28,6 +28,9 @@ const UserModel = new Schema(
       type: Boolean,
       default: false,
     },
+    device_id: {
+      type: String
+    },
     isDeleted: {
       type: Boolean,
       default: false,

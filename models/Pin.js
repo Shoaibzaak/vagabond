@@ -7,6 +7,9 @@ const PinModel = new Schema(
       type: String,
       required:true
     },
+    title:{
+      type: String,
+    },
     zipCode: {
       type: Number,
     },

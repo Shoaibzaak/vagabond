@@ -17,6 +17,13 @@ module.exports = {
         return user
 
     },
+    createContact: async (data) => {
+        console.log("createUser HelperFunction is called");
+        const contact = new Model.Contact(data)
+        await contact.save()
+        return contact
+
+    },
     getUserWithFullDetails: async (sortProperty, sortOrder = -1, offset = 0, limit = 100000, query) => {
         console.log("getUser Model Function called")
 
