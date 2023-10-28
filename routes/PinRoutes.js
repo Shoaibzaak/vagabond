@@ -39,7 +39,7 @@ router.route("/createPin").post(
       maxCount: 10,
     },
   ]),
-  // Authentication.UserAuth,
+  Authentication.UserAuth,
   Controller.PinController.createPin);
 
 //update pin
