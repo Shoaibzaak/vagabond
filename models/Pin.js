@@ -15,11 +15,9 @@ const PinModel = new Schema(
     },
     city: {
       type: String,
-      default:""
     },
     state: {
-      type: String,
-      default:""
+      type: String
     },
     description: {
       type: String,
