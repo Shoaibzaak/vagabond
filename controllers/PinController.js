@@ -146,6 +146,21 @@ module.exports = {
             throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
         }
     }),
+
+    
+    // reset map
+    resetMap: catchAsync(async (req, res, next) => {
+        var PinId = req.params.id
+        try {
+            const PinUser = await Model.Pin.findOneAndDelete(PinId)
+            if (!PinUser)
+                return res.badRequest("Pin  Not Found in our records");
+            var message = "Pin user deleted successfully";
+            res.ok(message, PinUser);
+        } catch (err) {
+            throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+        }
+    }),
 };
 
 
