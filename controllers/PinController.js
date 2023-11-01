@@ -51,7 +51,6 @@ module.exports = {
 
         try {
             var PinData = req.body;
-            console.log(req.files.images)
             PinData.images = []
             // if (Array.isArray(req.files.images)) {
             // for (let i = 0; i < req.files.images.length; i++) {
@@ -66,12 +65,14 @@ module.exports = {
 
             PinData.images = []
             const files = req.files.images
-            for (const file of files) {
-                const { path } = file
-                const newPath = await cloudUpload.cloudinaryUpload(path)
-                PinData.images.push(newPath)
-
-            }
+            if(req.files.images){
+                for (const file of files) {
+                    const { path } = file
+                    const newPath = await cloudUpload.cloudinaryUpload(path)
+                    PinData.images.push(newPath)
+    
+                }
+              }
             var result = await PinHelper.createPin(PinData);
 
             var message = "Pin created successfully";
