@@ -44,7 +44,13 @@ router.route("/createPin").post(
 
 //update pin
 router.route("/updatePin").post(
-  Authentication.UserAuth,
+  upload.fields([
+    {
+      name: "images",
+      maxCount: 10,
+    },
+  ]),
+  // Authentication.UserAuth,
   Controller.PinController.updatePin);
 
 //delete pin
