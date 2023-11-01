@@ -9,7 +9,7 @@ var server = require("http").createServer(app);
 var passport = require('passport');
 const session = require("express-session")
 //  var initPassport=require("./intipassport")
- require('./intipassport')
+require('./intipassport')
 
 // var io = require("socket.io")(server,{
 //   cors: {
@@ -41,6 +41,7 @@ app.use(
   response.notFound,
   response.badRequest
 );
+
 app.use(cors());
 
 //Passport Initialized
@@ -49,7 +50,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   secret: "shoa@12",
-  cookie:{secure:false}
+  cookie: { secure: false }
 }))
 
 //Logged In Middleware
@@ -70,8 +71,8 @@ app.get("/healthcheck", (req, res) => {
   res.json("success");
 });
 app.get('/failed', (req, res) => res.send('You Failed to log in!'))
-app.get('/good',(req, res) => {
- res.send(req.user,'is the authentcated user ')
+app.get('/good', (req, res) => {
+  res.send(req.user, 'is the authentcated user ')
 
 })
 // will go access 3rd party to get permission to access the data

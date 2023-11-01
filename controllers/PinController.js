@@ -9,20 +9,18 @@ const responseHelper = require("../helper/response.helper");
 const PinHelper = require("../helper/pin.helper");
 const Status = require("../status");
 const moment = require("moment");
-
+const cloudUpload = require('../cloudinary')
 const fs = require("fs");
 const path = require("path");
 const encrypt = require("bcrypt");
 const FormData = require('form-data');
 const catchAsync = require("../utils/catchAsync");
 const getDistance = require("../utils/getDistance");
-
 const pushRepository = require("./pushController");
 const pushRepo = new pushRepository();
 
 const { IDVClient } = require('yoti');
 const SANDBOX_CLIENT_SDK_ID = 'bbb23e67-b04c-4075-97f2-105c4559d46c';
-
 
 
 module.exports = {
@@ -50,14 +48,29 @@ module.exports = {
     // Create a new Pin
     createPin: catchAsync(async (req, res, next) => {
         console.log("createPin is called");
+
         try {
             var PinData = req.body;
+            console.log(req.files.images)
             PinData.images = []
-            if (Array.isArray(req.files.images)) {
-                for (let i = 0; i < req.files.images.length; i++) {
-                    PinData.images.push(`public/images/${req.files.images[i].originalname}`)
+            // if (Array.isArray(req.files.images)) {
+            // for (let i = 0; i < req.files.images.length; i++) {
+            //     const newPath = await cloudinary.uploader.upload(req.files.images[i].originalname,(result)=>{
+            //         console.log(result,'result')
+            //     })
+            //     console.log(newPath, "newPath")
+            //     PinData.images.push(newPath)
 
-                }
+            // }
+            // }
+
+            PinData.images = []
+            const files = req.files.images
+            for (const file of files) {
+                const { path } = file
+                const newPath = await cloudUpload.cloudinaryUpload(path)
+                PinData.images.push(newPath)
+
             }
             var result = await PinHelper.createPin(PinData);
 
@@ -154,7 +167,7 @@ module.exports = {
         }
     }),
 
-    
+
     // reset map
     resetMap: catchAsync(async (req, res, next) => {
         var PinId = req.params.id
