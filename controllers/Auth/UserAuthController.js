@@ -315,6 +315,22 @@ module.exports = {
           responseHelper.requestfailure(res, error);
       }
   }),
-
+ // decline user
+ temporaryDeclineAccount: catchAsync(async (req, res, next) => {
+  var userId = req.params.id
+  try {
+      var result = await Model.User.findOneAndUpdate(
+          { _id: userId },
+          {isDeleted:true},
+          {
+              new: true,
+          }
+      );
+      var message = "Account  deleted successfully";
+      res.ok(message, result);
+  } catch (err) {
+      throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+  }
+}),
 
 };
