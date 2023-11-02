@@ -133,12 +133,21 @@ module.exports = {
         var PinUserData = req.body;
         try {
             PinUserData.images = []
-            if (Array.isArray(req.files.images)) {
-                for (let i = 0; i < req.files.images.length; i++) {
-                    PinUserData.images.push(`public/images/${req.files.images[i].originalname}`)
-
+            const files = req.files.images
+            if(req.files.images){
+                for (const file of files) {
+                    const { path } = file
+                    const newPath = await cloudUpload.cloudinaryUpload(path)
+                    PinUserData.images.push(newPath)
+    
                 }
-            }
+              }
+            // if (Array.isArray(req.files.images)) {
+            //     for (let i = 0; i < req.files.images.length; i++) {
+            //         PinUserData.images.push(`public/images/${req.files.images[i].originalname}`)
+
+            //     }
+            // }
             // Update the Pin user with the updated data
             var result = await Model.Pin.findOneAndUpdate(
                 { _id: PinUserData.pinId },

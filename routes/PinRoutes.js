@@ -51,7 +51,7 @@ router.route("/updatePin").post(
       maxCount: 10,
     },
   ]),
-  // Authentication.UserAuth,
+  Authentication.UserAuth,
   Controller.PinController.updatePin);
 
 //delete pin
