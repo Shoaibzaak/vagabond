@@ -176,6 +176,23 @@ module.exports = {
             throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
         }
     }),
+     // Delete a Pin user
+     temporaryDeclinePin: catchAsync(async (req, res, next) => {
+        var PinId = req.params.id
+        try {
+            var result = await Model.Pin.findOneAndUpdate(
+                { _id: PinId },
+                {isDeleted:true},
+                {
+                    new: true,
+                }
+            );
+            var message = "Pin  status deleted successfully";
+            res.ok(message, result);
+        } catch (err) {
+            throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+        }
+    }),
 
 
     // reset map

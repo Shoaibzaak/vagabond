@@ -70,7 +70,10 @@ router.route("/getAllPins").post(
   Authentication.UserAuth,
   Controller.PinController.getAllPinUsers);
 
-
+//delete pin temporary
+router.route("/temporaryDeletePin/:id").delete(
+  Authentication.UserAuth,
+  Controller.PinController.temporaryDeclinePin);
 
 module.exports = router;
 
