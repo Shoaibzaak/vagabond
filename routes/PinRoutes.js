@@ -65,7 +65,7 @@ router.route("/findPinById/:id").get(
   Authentication.UserAuth,
   Controller.PinController.getPinUser);
 
-  // get all  pins with details
+// get all  pins with details
 router.route("/getAllPins").post(
   Authentication.UserAuth,
   Controller.PinController.getAllPinUsers);
@@ -75,10 +75,10 @@ router.route("/temporaryDeletePin/:id").delete(
   Authentication.UserAuth,
   Controller.PinController.temporaryDeclinePin);
 
- //reset map functionality
- router.route("/resetMap").get(
+//reset map functionality
+router.route("/resetMap").get(
   Authentication.UserAuth,
-  Controller.PinController.resetMap); 
+  Controller.PinController.resetMap);
 
 module.exports = router;
 

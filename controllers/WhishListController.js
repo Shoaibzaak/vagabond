@@ -50,7 +50,7 @@ module.exports = {
 
         try {
             var WhishlistData = req.body;
-         
+
             var result = await WhishlistHelper.createWhishList(WhishlistData);
 
             var message = "Whishlist created successfully";
@@ -64,20 +64,32 @@ module.exports = {
         }
     }),
 
- 
+
     // Get all Whishlist users with full details
     getAllWhishlistUsers: catchAsync(async (req, res, next) => {
         console.log("Whishlistdetails is called");
         try {
-            var WhishlistData = req.body;
+            // var WhishlistData = req.body;
 
-            var result = await WhishlistHelper.getWhishListWithFullDetails(WhishlistData.sortproperty, WhishlistData.sortorder, WhishlistData.offset, WhishlistData.limit, WhishlistData.query);
-
+            // var result = await WhishlistHelper.getWhishListWithFullDetails(WhishlistData.sortproperty, WhishlistData.sortorder, WhishlistData.offset, WhishlistData.limit, WhishlistData.query);
+            const pageNumber = parseInt(req.query.pageNumber) || 0;
+            const limit = parseInt(req.query.limit) || 10;
             var message = "Whishlistdetails found successfully";
+            var whishLists = await Model.Whishlist.find()
+                .skip((pageNumber * limit) - limit)
+                .limit(limit)
+                .sort("-_id")
+                ;
+
+            const whishListSize = whishLists.length
+            const result = {
+                whishList: whishLists,
+                count: whishListSize,
+                limit: limit
+            }
             if (result == null) {
                 message = "Whishlistdetails does not exist.";
             }
-
             return responseHelper.success(res, result, message);
         } catch (error) {
             responseHelper.requestfailure(res, error);
@@ -89,7 +101,7 @@ module.exports = {
         // Get the Whishlist user data from the request body
         var WhishlistUserData = req.body;
         try {
-           
+
             // Update the Whishlist user with the updated data
             var result = await Model.Whishlist.findOneAndUpdate(
                 { _id: WhishlistUserData.WhishlistId },
@@ -118,7 +130,7 @@ module.exports = {
             throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
         }
     }),
-    
+
 };
 
 

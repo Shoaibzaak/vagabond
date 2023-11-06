@@ -36,9 +36,9 @@ var upload = Multer({ //multer settings
 router.route("/createWhishList").post(
   Authentication.UserAuth,
   Controller.WhishListController.createWhishlist);
-  router.route("/getAllWhishList").post(
-    Authentication.UserAuth,
-    Controller.WhishListController.getAllWhishlistUsers);
+router.route("/getAllWhishList").get(
+  Authentication.UserAuth,
+  Controller.WhishListController.getAllWhishlistUsers);
 
 
 
