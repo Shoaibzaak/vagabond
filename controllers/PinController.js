@@ -65,14 +65,14 @@ module.exports = {
 
             PinData.images = []
             const files = req.files.images
-            if(req.files.images){
+            if (req.files.images) {
                 for (const file of files) {
                     const { path } = file
                     const newPath = await cloudUpload.cloudinaryUpload(path)
                     PinData.images.push(newPath)
-    
+
                 }
-              }
+            }
             var result = await PinHelper.createPin(PinData);
 
             var message = "Pin created successfully";
@@ -134,14 +134,14 @@ module.exports = {
         try {
             PinUserData.images = []
             const files = req.files.images
-            if(req.files.images){
+            if (req.files.images) {
                 for (const file of files) {
                     const { path } = file
                     const newPath = await cloudUpload.cloudinaryUpload(path)
                     PinUserData.images.push(newPath)
-    
+
                 }
-              }
+            }
             // if (Array.isArray(req.files.images)) {
             //     for (let i = 0; i < req.files.images.length; i++) {
             //         PinUserData.images.push(`public/images/${req.files.images[i].originalname}`)
@@ -176,13 +176,13 @@ module.exports = {
             throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
         }
     }),
-     // Delete a Pin user
-     temporaryDeclinePin: catchAsync(async (req, res, next) => {
+    // Delete a Pin user
+    temporaryDeclinePin: catchAsync(async (req, res, next) => {
         var PinId = req.params.id
         try {
             var result = await Model.Pin.findOneAndUpdate(
                 { _id: PinId },
-                {isDeleted:true},
+                { isDeleted: true },
                 {
                     new: true,
                 }
@@ -197,13 +197,21 @@ module.exports = {
 
     // reset map
     resetMap: catchAsync(async (req, res, next) => {
-        var PinId = req.params.id
         try {
-            const PinUser = await Model.Pin.findOneAndDelete(PinId)
-            if (!PinUser)
-                return res.badRequest("Pin  Not Found in our records");
-            var message = "Pin user deleted successfully";
-            res.ok(message, PinUser);
+            var result = await Model.Pin.updateMany(
+                {},
+                {
+                    $set: {
+                        isDeleted: true,
+                    }
+                },
+
+                {
+                    multi: true
+                }
+            );
+            var message = "reset map successfully";
+            res.ok(message, result.message);
         } catch (err) {
             throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
         }

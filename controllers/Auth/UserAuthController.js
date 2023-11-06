@@ -11,7 +11,7 @@ const referralCodes = require("referral-codes");
 const encrypt = require("bcrypt");
 const responseHelper = require("../../helper/response.helper");
 const validatePassword = require("../../utils/validatePassword");
-const userHelper=require('../../helper/user.helper')
+const userHelper = require('../../helper/user.helper')
 module.exports = {
   register: async (req, res, next) => {
     try {
@@ -51,21 +51,21 @@ module.exports = {
       const { email, password } = req.body;
       if (!email || !password)
         throw new HTTPError(Status.BAD_REQUEST, Message.required);
-        // Email validation
-        if (!Validation.validateEmail(email)) {
-          return res.badRequest("Invalid email format");
-        }
+      // Email validation
+      if (!Validation.validateEmail(email)) {
+        return res.badRequest("Invalid email format");
+      }
       let user
       user = await Model.User.findOne({ email })
       if (!user) throw new HTTPError(Status.NOT_FOUND, Message.userNotFound);
       if (user.isEmailConfirmed == true) {
-        encrypt.compare(password, user.password, async(err, match) => {
+        encrypt.compare(password, user.password, async (err, match) => {
           if (match) {
-              await Model.User.findOneAndUpdate(
-                { _id: user._id },
-                { $unset: { otp: 1, otpExpiry: 1 } },
+            await Model.User.findOneAndUpdate(
+              { _id: user._id },
+              { $unset: { otp: 1, otpExpiry: 1 } },
 
-              );
+            );
             const token = `GHA ${Services.JwtService.issue({
               id: Services.HashService.encrypt(user._id),
             })}`;
@@ -92,14 +92,14 @@ module.exports = {
     }
   },
   accountVerification: catchAsync(async (req, res, next) => {
-    const {  otp } = req.body;
-    if (!otp )
+    const { otp } = req.body;
+    if (!otp)
       throw new HTTPError(Status.BAD_REQUEST, Message.required);
 
     const now = moment().valueOf();
     let user;
     if (otp) {
-      user = await Model.User.findOne({otp: otp })
+      user = await Model.User.findOne({ otp: otp })
     }
 
     else {
@@ -171,11 +171,11 @@ module.exports = {
       if (error) return console.log(error);
       encrypt.hash(tempPassword, salt, async (error, hash) => {
         // if (user) {
-          await Model.User.findOneAndUpdate(
-            { _id: user._id },
-            { $set: { password: hash },  },
+        await Model.User.findOneAndUpdate(
+          { _id: user._id },
+          { $set: { password: hash }, },
 
-          );
+        );
         //   // const token = `GHA ${Services.JwtService.issue({
         //   //   id: Services.HashService.encrypt(user._id),
         //   // })}`;
@@ -185,7 +185,7 @@ module.exports = {
       });
     });
 
-    
+
     // if (user) {
     //   await Model.User.findOneAndUpdate({ _id: user._id }, { $set: { otp: otp, otpExpiry: otpExpiryCode } });
     // }
@@ -202,8 +202,8 @@ module.exports = {
 
   }),
   updatePassword: catchAsync(async (req, res, next) => {
-    const { otp,newPassword } = req.body;
-    if (!otp ||!newPassword)
+    const { otp, newPassword } = req.body;
+    if (!otp || !newPassword)
       return res.status(400).json({
         success: false,
         message: Message.badRequest,
@@ -225,29 +225,29 @@ module.exports = {
         message: Message.passwordTooWeak,
         data: null,
       });
-      encrypt.genSalt(10, (error, salt) => {
-        if (error) return console.log(error);
-        encrypt.hash(newPassword, salt, async (error, hash) => {
-          if (user) {
-            await Model.User.findOneAndUpdate(
-              { _id: user._id },
-              { $set: { password: hash }, $unset: { otp: 1, otpExpiry: 1 } },
+    encrypt.genSalt(10, (error, salt) => {
+      if (error) return console.log(error);
+      encrypt.hash(newPassword, salt, async (error, hash) => {
+        if (user) {
+          await Model.User.findOneAndUpdate(
+            { _id: user._id },
+            { $set: { password: hash }, $unset: { otp: 1, otpExpiry: 1 } },
 
-            );
-            // const token = `GHA ${Services.JwtService.issue({
-            //   id: Services.HashService.encrypt(user._id),
-            // })}`;
-            user = { ...user._doc, usertype: "User" };
-            return res.ok("Password updated successfully", user);
-          }
-        });
+          );
+          // const token = `GHA ${Services.JwtService.issue({
+          //   id: Services.HashService.encrypt(user._id),
+          // })}`;
+          user = { ...user._doc, usertype: "User" };
+          return res.ok("Password updated successfully", user);
+        }
       });
-    
+    });
+
   }),
 
   changePassword: catchAsync(async (req, res, next) => {
     const { email, currentPassword, newPassword } = req.body;
-    if (!email|| !currentPassword || !newPassword)
+    if (!email || !currentPassword || !newPassword)
       return res.status(400).json({
         success: false,
         message: Message.badRequest,
@@ -269,7 +269,7 @@ module.exports = {
         message: Message.passwordTooWeak,
         data: null,
       });
-    
+
 
     encrypt.compare(currentPassword, user.password, (err, match) => {
       if (match) {
@@ -297,40 +297,40 @@ module.exports = {
 
     })
   }),
-    // Create a new Contact User
-    createContact: catchAsync(async (req, res, next) => {
-      console.log("createContact is called");
-      try {
-          var contactData = req.body;
-         
-          var result = await userHelper.createContact(contactData);
+  // Create a new Contact User
+  createContact: catchAsync(async (req, res, next) => {
+    console.log("createContact is called");
+    try {
+      var contactData = req.body;
 
-          var message = "contact created successfully";
-          if (result == null) {
-              message = "contact does not exist.";
-          }
+      var result = await userHelper.createContact(contactData);
 
-          return responseHelper.success(res, result, message);
-      } catch (error) {
-          responseHelper.requestfailure(res, error);
+      var message = "contact created successfully";
+      if (result == null) {
+        message = "contact does not exist.";
       }
+
+      return responseHelper.success(res, result, message);
+    } catch (error) {
+      responseHelper.requestfailure(res, error);
+    }
   }),
- // decline user
- temporaryDeclineAccount: catchAsync(async (req, res, next) => {
-  var userId = req.params.id
-  try {
+  // decline user
+  temporaryDeclineAccount: catchAsync(async (req, res, next) => {
+    var userId = req.params.id
+    try {
       var result = await Model.User.findOneAndUpdate(
-          { _id: userId },
-          {isDeleted:true},
-          {
-              new: true,
-          }
+        { _id: userId },
+        { isDeleted: true },
+        {
+          new: true,
+        }
       );
       var message = "Account  deleted successfully";
       res.ok(message, result);
-  } catch (err) {
+    } catch (err) {
       throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
-  }
-}),
+    }
+  }),
 
 };

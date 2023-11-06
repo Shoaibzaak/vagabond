@@ -75,6 +75,11 @@ router.route("/temporaryDeletePin/:id").delete(
   Authentication.UserAuth,
   Controller.PinController.temporaryDeclinePin);
 
+ //reset map functionality
+ router.route("/resetMap").get(
+  Authentication.UserAuth,
+  Controller.PinController.resetMap); 
+
 module.exports = router;
 
 
