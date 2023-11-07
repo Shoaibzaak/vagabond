@@ -36,11 +36,15 @@ var upload = Multer({ //multer settings
 router.route("/createWhishList").post(
   Authentication.UserAuth,
   Controller.WhishListController.createWhishlist);
+//  get All whishlists
 router.route("/getAllWhishList").get(
   Authentication.UserAuth,
   Controller.WhishListController.getAllWhishlistUsers);
 
-
+// delete whishlist
+router.route("/declineWhishList/:id").delete(
+  Authentication.UserAuth,
+  Controller.WhishListController.declineWhishlist);
 
 
 module.exports = router;

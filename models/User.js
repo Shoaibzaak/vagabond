@@ -15,6 +15,9 @@ const UserModel = new Schema(
       trim: true,
       required: true
     },
+    Bio: {
+      type: String
+    },
     password: {
       type: String
     },
