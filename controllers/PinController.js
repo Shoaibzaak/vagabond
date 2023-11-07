@@ -32,7 +32,7 @@ module.exports = {
             var pinId = req.params.id;
             console.log(pinId)
 
-            var result = await PinHelper.findPinById(pinId);
+            var result = await Model.Pin.findById({_id:pinId}).populate('userId');
 
             var message = "PinId found successfully";
             if (result == null) {
