@@ -36,7 +36,9 @@ const PinModel = new Schema(
       type: Boolean,
       default: false,
     },
-    
+    category:{
+      type: mongoose.Schema.Types.ObjectId,ref: "Category"
+    }
   },
 
   {

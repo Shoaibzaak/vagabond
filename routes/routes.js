@@ -4,5 +4,6 @@ const router = express.Router();
 router.use("/auth/user", Routes.UserAuthRoutes);
 router.use("/pin", Routes.PinRoutes);
 router.use("/whishList", Routes.WhishListRoutes);
+router.use("/category", Routes.CategoryRoutes);
 
 module.exports = router;
