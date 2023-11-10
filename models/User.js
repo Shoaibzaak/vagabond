@@ -15,7 +15,10 @@ const UserModel = new Schema(
       trim: true,
       required: true
     },
-    Bio: {
+    profilePic: {
+      type: String
+    },
+    bio: {
       type: String
     },
     password: {

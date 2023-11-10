@@ -333,4 +333,26 @@ module.exports = {
     }
   }),
 
+  // upload profile pic
+  uploadProfilePic: catchAsync(async (req, res, next) => {
+    const userData=req.body
+    try {
+      if (!req.files)
+      throw new HTTPError(Status.BAD_REQUEST, "Profile picture is required");
+       
+      let profilePic = `/public/${req.files.profilePic[0].filename}`;
+        var result = await Model.User.findOneAndUpdate(
+            { _id: userData.userId  },
+            { $set: { profilePic } },
+            {
+                new: true,
+            }
+        );
+        var message = "Profile picture uploaded successfully";
+        res.ok(message, result);
+    } catch (err) {
+        throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+    }
+}),
+
 };

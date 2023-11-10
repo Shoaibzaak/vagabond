@@ -5,12 +5,8 @@ const path = require("path");
 const multer = require("multer");
 const fs = require('fs');
 const userStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-      // Check if the directory exists, if not create it
-      if (!fs.existsSync('uploads/')) {
-        fs.mkdirSync('uploads/');
-      }
-    cb(null, "./uploads");
+ destination: (req, file, cb) => {
+    cb(null, "./public");
   },
   filename: (req, file, cb) => {
     cb(
@@ -19,7 +15,18 @@ const userStorage = multer.diskStorage({
     );
   },
 });
-const upload = multer({ storage: userStorage });
+const upload = multer({ storage: userStorage,fileFilter: function (req, file, callback) {
+  var ext = path.extname(file.originalname);
+  if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+    return callback(new Error('Only images are allowed'))
+  }
+  callback(null, true)
+},
+limits: {
+  fileSize: 1024 * 1024
+} }
+  
+  );
 
 router.route("/register").post(Controller.UserAuthController.register);
 router.route("/accontVerification").post(Controller.UserAuthController.accountVerification);
@@ -30,19 +37,14 @@ router.route("/resendOtp").post(Controller.UserAuthController.resendOtp);
 router.route("/updatePassword").post(Controller.UserAuthController.updatePassword);
 router.route("/createContact").post(Controller.UserAuthController.createContact);
 router.route("/temporaryDeclineAccount/:id").delete(Controller.UserAuthController.temporaryDeclineAccount);
-
-// router.route("/profile/setup").post(
-//   upload.fields([
-//     {
-//       name: "profilePic",
-//       maxCount: 1,
-//     },
-//     {
-//       name: "resume",
-//       maxCount: 1,
-//     },
-//   ]),
-//   Controller.AuthController.setupProfile
-// );
+router.route("/uploadProfilePic").post(
+  upload.fields([
+    {
+      name: "profilePic",
+      maxCount: 1,
+    }
+  ]),
+  Controller.UserAuthController.uploadProfilePic
+);
 
 module.exports = router;
