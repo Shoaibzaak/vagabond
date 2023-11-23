@@ -246,15 +246,17 @@ module.exports = {
   }),
 
   changePassword: catchAsync(async (req, res, next) => {
-    const { email, currentPassword, newPassword } = req.body;
-    if (!email || !currentPassword || !newPassword)
+    // this user get from authenticated user
+    const verifiedUser=req.user
+    const {currentPassword, newPassword } = req.body;
+    if (  !currentPassword || !newPassword)
       return res.status(400).json({
         success: false,
         message: Message.badRequest,
         data: null,
       });
     let user;
-    user = await Model.User.findOne({ email });
+    user = await Model.User.findOne({ _id:verifiedUser._id });
     //User not found
     if (!user) throw new HTTPError(Status.NOT_FOUND, Message.userNotFound);
     if (user) {
@@ -270,7 +272,6 @@ module.exports = {
         data: null,
       });
 
-
     encrypt.compare(currentPassword, user.password, (err, match) => {
       if (match) {
         encrypt.genSalt(10, (error, salt) => {
@@ -279,23 +280,20 @@ module.exports = {
             if (user) {
               await Model.User.findOneAndUpdate(
                 { _id: user._id },
-                { $set: { password: hash }, $unset: { otp: 1, otpExpiry: 1 } },
-
+                { $set: { password: hash } }
               );
-              const token = `GHA ${Services.JwtService.issue({
-                id: Services.HashService.encrypt(user._id),
-              })}`;
-              user = { ...user._doc, token, usertype: "User" };
+              // const token = `GHA ${Services.JwtService.issue({
+              //   id: Services.HashService.encrypt(user._id),
+              // })}`;
+              user = { ...user._doc, usertype: "User" };
               return res.ok("Password updated successfully", user);
             }
           });
         });
-      }
-      else {
+      } else {
         return res.badRequest("Invalid Credentials");
       }
-
-    })
+    });
   }),
   // Create a new Contact User
   createContact: catchAsync(async (req, res, next) => {

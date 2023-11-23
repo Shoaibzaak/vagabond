@@ -4,6 +4,7 @@ const router = express.Router();
 const path = require("path");
 const multer = require("multer");
 const fs = require('fs');
+const Authentication = require("../../policy/index");
 const userStorage = multer.diskStorage({
  destination: (req, file, cb) => {
     cb(null, "./public");
@@ -32,7 +33,7 @@ router.route("/register").post(Controller.UserAuthController.register);
 router.route("/accontVerification").post(Controller.UserAuthController.accountVerification);
 router.route("/login").post(Controller.UserAuthController.login);
 router.route("/forgetpassword").post(Controller.UserAuthController.forgetPassword);
-router.route("/changepassword").post(Controller.UserAuthController.changePassword);
+router.route("/changepassword").post(Authentication.UserAuth,Controller.UserAuthController.changePassword);
 router.route("/resendOtp").post(Controller.UserAuthController.resendOtp);
 router.route("/updatePassword").post(Controller.UserAuthController.updatePassword);
 router.route("/createContact").post(Controller.UserAuthController.createContact);
