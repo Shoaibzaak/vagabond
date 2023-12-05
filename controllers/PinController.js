@@ -167,7 +167,7 @@ module.exports = {
     declinePin: catchAsync(async (req, res, next) => {
         var PinId = req.params.id
         try {
-            const PinUser = await Model.Pin.findOneAndDelete(PinId)
+            const PinUser = await Model.Pin.findByIdAndDelete(PinId)
             if (!PinUser)
                 return res.badRequest("Pin  Not Found in our records");
             var message = "Pin user deleted successfully";
@@ -180,7 +180,7 @@ module.exports = {
     temporaryDeclinePin: catchAsync(async (req, res, next) => {
         var PinId = req.params.id
         try {
-            var result = await Model.Pin.findOneAndUpdate(
+            var result = await Model.Pin.findByIdAndDelete(
                 { _id: PinId },
                 { isDeleted: true },
                 {
