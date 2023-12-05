@@ -121,7 +121,7 @@ module.exports = {
     declineWhishlist: catchAsync(async (req, res, next) => {
         var WhishlistId = req.params.id
         try {
-            const WhishlistUser = await Model.Whishlist.findOneAndDelete({_id:WhishlistId})
+            const WhishlistUser = await Model.Whishlist.findByIdAndDelete({_id:WhishlistId})
             if (!WhishlistUser)
                 return res.badRequest("Whishlist  Not Found in our records");
             var message = "Whishlist user deleted successfully";
