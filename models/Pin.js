@@ -4,10 +4,18 @@ const Schema = mongoose.Schema;
 const PinModel = new Schema(
   {
     place: {
-      type: String,
-      required:true
+      type: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ['Point'], // 'location.type' must be 'Point'
+      },
+      name: {
+        type: String
+      },
+      coordinates: {
+        type: [Number],
+      }
     },
-    title:{
+    title: {
       type: String,
     },
     zipCode: {
@@ -17,28 +25,33 @@ const PinModel = new Schema(
       type: String,
     },
     state: {
-      type: String
+      type: String,
     },
     description: {
       type: String,
     },
-    pinDate:{
-      type:Date
+    pinDate: {
+      type: Date,
     },
-    pinType:{
-      type:String,
+    pinType: {
+      type: String,
       enum: ["PUBLICE", "PRIVATE"],
-      default: "PRIVATE", 
+      default: "PRIVATE",
     },
-    images: [{type:String}],
-    userId:{type: mongoose.Schema.Types.ObjectId,ref: "User",required:true},
+    images: [{ type: String }],
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
     },
-    category:{
-      type: mongoose.Schema.Types.ObjectId,ref: "Category"
-    }
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
   },
 
   {
