@@ -35,7 +35,7 @@ const PinModel = new Schema(
     },
     pinType: {
       type: String,
-      enum: ["PUBLICE", "PRIVATE"],
+      enum: ["PUBLIC", "PRIVATE"],
       default: "PRIVATE",
     },
     images: [{ type: String }],
