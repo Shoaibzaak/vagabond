@@ -50,12 +50,6 @@ router
   .post(Authentication.UserAuth, Controller.PinController.createCustomPin);
 //update pin
 router.route("/updatePin").post(
-  upload.fields([
-    {
-      name: "images",
-      maxCount: 10,
-    },
-  ]),
   Authentication.UserAuth,
   Controller.PinController.updatePin
 );

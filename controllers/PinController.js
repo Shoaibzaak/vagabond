@@ -135,15 +135,15 @@ module.exports = {
     // Get the Pin user data from the request body
     var PinUserData = req.body;
     try {
-      PinUserData.images = [];
-      const files = req.files.images;
-      if (req.files.images) {
-        for (const file of files) {
-          const { path } = file;
-          const newPath = await cloudUpload.cloudinaryUpload(path);
-          PinUserData.images.push(newPath);
-        }
-      }
+      // PinUserData.images = [];
+      // const files = req.files.images;
+      // if (req.files.images) {
+      //   for (const file of files) {
+      //     const { path } = file;
+      //     const newPath = await cloudUpload.cloudinaryUpload(path);
+      //     PinUserData.images.push(newPath);
+      //   }
+      // }
       // if (Array.isArray(req.files.images)) {
       //     for (let i = 0; i < req.files.images.length; i++) {
       //         PinUserData.images.push(`public/images/${req.files.images[i].originalname}`)
