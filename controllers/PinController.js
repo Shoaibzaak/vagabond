@@ -158,6 +158,12 @@ module.exports = {
           new: true,
         }
       );
+      // Check if the Pin user was found and updated successfully
+      if (!result) {
+        return res.status(Status.NOT_FOUND).json({
+            error: "Pin not found",
+        });
+    }
       var message = "Pin  status updated successfully";
       res.ok(message, result);
     } catch (err) {
