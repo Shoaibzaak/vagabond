@@ -67,7 +67,7 @@ router
 // get all  pins with details
 router
   .route("/getAllPins")
-  .post(Authentication.UserAuth, Controller.PinController.getAllPinUsers);
+  .get(Authentication.UserAuth, Controller.PinController.getAllPinUsers);
 
 //delete pin temporary
 router

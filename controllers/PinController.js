@@ -109,21 +109,25 @@ module.exports = {
   getAllPinUsers: catchAsync(async (req, res, next) => {
     console.log("Pindetails is called");
     try {
-      var PinData = req.body;
+      // var pinData = req.body;
 
-      var result = await PinHelper.getPinWithFullDetails(
-        PinData.sortproperty,
-        PinData.sortorder,
-        PinData.offset,
-        PinData.limit,
-        PinData.query
-      );
-
-      var message = "Pindetails found successfully";
+      // var result = await pinHelper.getpinWithFullDetails(pinData.sortproperty, pinData.sortorder, pinData.offset, pinData.limit, pinData.query);
+      const pageNumber = parseInt(req.query.pageNumber) || 0;
+      const limit = parseInt(req.query.limit) || 10;
+      var message = "pindetails found successfully";
+      var pins = await Model.Pin.find()
+        .skip(pageNumber * limit - limit)
+        .limit(limit)
+        .sort("-_id");
+      const pinSize = pins.length;
+      const result = {
+        pin: pins,
+        count: pinSize,
+        limit: limit,
+      };
       if (result == null) {
-        message = "Pindetails does not exist.";
+        message = "pindetails does not exist.";
       }
-
       return responseHelper.success(res, result, message);
     } catch (error) {
       responseHelper.requestfailure(res, error);
@@ -161,9 +165,9 @@ module.exports = {
       // Check if the Pin user was found and updated successfully
       if (!result) {
         return res.status(Status.NOT_FOUND).json({
-            error: "Pin not found",
+          error: "Pin not found",
         });
-    }
+      }
       var message = "Pin  status updated successfully";
       res.ok(message, result);
     } catch (err) {
@@ -245,21 +249,26 @@ module.exports = {
     console.log("uploadImage is called");
 
     try {
-        const files = req.files.images;
+      const files = req.files.images;
 
-        if (!files || !files.length) {
-            throw new Error("No images were provided for upload.");
-        }
+      if (!files || !files.length) {
+        throw new Error("No images were provided for upload.");
+      }
 
-        const newPathArray = await Promise.all(files.map(async (file) => {
-            const { path } = file;
-            return await cloudUpload.cloudinaryUpload(path);
-        }));
-        return responseHelper.success(res, { path: newPathArray }, "Images uploaded successfully");
+      const newPathArray = await Promise.all(
+        files.map(async (file) => {
+          const { path } = file;
+          return await cloudUpload.cloudinaryUpload(path);
+        })
+      );
+      return responseHelper.success(
+        res,
+        { path: newPathArray },
+        "Images uploaded successfully"
+      );
     } catch (error) {
-        console.error("Error during image upload:", error);
-        responseHelper.requestfailure(res, error);
+      console.error("Error during image upload:", error);
+      responseHelper.requestfailure(res, error);
     }
-}),
-
+  }),
 };

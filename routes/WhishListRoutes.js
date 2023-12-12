@@ -40,6 +40,9 @@ router.route("/createWhishList").post(
 router.route("/getAllWhishList").get(
   Authentication.UserAuth,
   Controller.WhishListController.getAllWhishlistUsers);
+  router.route("/updateWhishList").post(
+    Authentication.UserAuth,
+    Controller.WhishListController.updateWhishlist);
 
 // delete whishlist
 router.route("/declineWhishList/:id").delete(
