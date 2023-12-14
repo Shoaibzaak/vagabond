@@ -386,5 +386,37 @@ module.exports = {
       }
     }
   }),
+   // Retrieve  user by userId
+  getUser: catchAsync(async (req, res, next) => {
+    console.log("findPinById is called");
+    try {
+      var userId = req.params.id;
+      console.log(userId);
+
+      var result = await Model.User.findById({ _id: userId })
+      var pins = await Model.Pin.find()
+      var Whislist = await Model.Whishlist.find()
+      var category = await Model.Category.find()
+     
+      const pinSize = pins.length;
+      const whisListSize = Whislist.length;
+      const categoryize = category.length;
+      const countModels = {
+        countPin: pinSize,
+        countWhishList: whisListSize,
+        countCategory: categoryize
+      };
+
+      var message = "userId found successfully";
+      if (result == null) {
+        message = "userId does not exist.";
+      }
+
+      return responseHelper.success(res, result, countModels,message);
+    } catch (error) {
+      responseHelper.requestfailure(res, error);
+    }
+  }),
+
   
 };
