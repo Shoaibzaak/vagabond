@@ -361,7 +361,7 @@ module.exports = {
       // Update user model with the image URL
       const result = await Model.User.findByIdAndUpdate(
         { _id: userData.userId },
-        { profilePic: cloudinaryResult ,bio:userData.bio}, // Assuming 'profilePic' is a field in your user model
+        { profilePic: cloudinaryResult ,bio:userData.bio,address:userData.address}, // Assuming 'profilePic' is a field in your user model
         { new: true }
       );
   
@@ -396,15 +396,18 @@ module.exports = {
       var result = await Model.User.findById({ _id: userId })
       var Users = await Model.User.find()
       var Whislist = await Model.Whishlist.find()
-      var category = await Model.Category.find()
+      var publicPins = await Model.Pin.find({pinType:"PUBLIC"})
+      var privatePins = await Model.Pin.find({pinType:"PRIVATE"})
      
       const UserSize = Users.length;
       const whisListSize = Whislist.length;
-      const categoryize = category.length;
+      const publicPinSize = publicPins.length;
+      const privatePinSize = privatePins.length;
       const countModels = {
         countUser: UserSize,
         countWhishList: whisListSize,
-        countCategory: categoryize
+        publicPins: publicPinSize,
+        privatePIns: privatePinSize
       };
 
       var message = "userId found successfully";

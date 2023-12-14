@@ -18,6 +18,9 @@ const UserModel = new Schema(
     profilePic: {
       type: String
     },
+    address:{
+     type:String
+    },
     bio: {
       type: String
     },

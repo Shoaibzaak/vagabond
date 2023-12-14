@@ -5,13 +5,16 @@ const categoryModel = new Schema(
   {
     name: {
       type: String,
-      required:true
+      required: true,
     },
-    color:{
-        type:String
-    }
-   
-    
+    color: {
+      type: String,
+    },
+    categoryType: {
+      type: String,
+      enum: ["GENERAL", "PRIVATE"],
+      default: "PRIVATE",
+    },
   },
 
   {
