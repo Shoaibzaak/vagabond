@@ -204,26 +204,42 @@ module.exports = {
       throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
     }
   }),
-
   // reset map
   resetMap: catchAsync(async (req, res, next) => {
     try {
-      var result = await Model.Pin.updateMany(
+      const { password } = req.body;
+      const user = await Model.User.findById(req.user.id);
+  
+      if (!user) {
+        throw new HTTPError(Status.UNAUTHORIZED, 'User not found');
+      }
+  
+      // Compare the provided password with the hashed password stored in the user record
+      const passwordMatch = await encrypt.compare(password, user.password);
+  
+      if (!passwordMatch) {
+        throw new HTTPError(Status.UNAUTHORIZED, 'Invalid password');
+      }
+  
+      const result = await Model.Pin.updateMany(
         {},
         {
           $set: {
             isDeleted: true,
           },
         },
-
         {
           multi: true,
         }
       );
-      var message = "reset map successfully";
+  
+      const message = 'Reset map successfully';
       res.ok(message, result.message);
     } catch (err) {
-      throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+      throw new HTTPError(
+        err.status || Status.INTERNAL_SERVER_ERROR,
+        err.message || 'Internal Server Error'
+      );
     }
   }),
   // Create a new Pin

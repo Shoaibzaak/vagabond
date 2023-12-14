@@ -80,9 +80,7 @@ router
 //reset map functionality
 router
   .route("/resetMap")
-  .get(Authentication.UserAuth, Controller.PinController.resetMap);
-  //reset map functionality
-  //reset map functionality
+  .post(Authentication.UserAuth, Controller.PinController.resetMap);
 router
 .route("/hidePins")
 .get(Authentication.UserAuth, Controller.PinController.hidePins);
