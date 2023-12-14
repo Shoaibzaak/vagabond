@@ -357,10 +357,7 @@ module.exports = {
       const { path } = file;
   
       // Upload the file to Cloudinary
-      const cloudinaryResult = await cloudUpload.cloudinaryUpload(path);
-      console.log(cloudinaryResult,'cloudinaryResult')
-     
-  
+      const cloudinaryResult = await cloudUpload.cloudinaryUpload(path); 
       // Update user model with the image URL
       const result = await Model.User.findByIdAndUpdate(
         { _id: userData.userId },

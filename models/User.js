@@ -15,7 +15,6 @@ const UserModel = new Schema(
       trim: true,
       required: true
     },
-    // profilePic: [{ type: String }],
     profilePic: {
       type: String
     },
