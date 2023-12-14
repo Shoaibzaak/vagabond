@@ -204,44 +204,38 @@ module.exports = {
       throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
     }
   }),
-  // reset map
   resetMap: catchAsync(async (req, res, next) => {
     try {
       const { password } = req.body;
       const user = await Model.User.findById(req.user.id);
-  
+
       if (!user) {
-        throw new HTTPError(Status.UNAUTHORIZED, 'User not found');
+        throw new HTTPError(Status.UNAUTHORIZED, "User not found");
       }
-  
+
       // Compare the provided password with the hashed password stored in the user record
       const passwordMatch = await encrypt.compare(password, user.password);
-  
+
       if (!passwordMatch) {
-        throw new HTTPError(Status.UNAUTHORIZED, 'Invalid password');
+        throw new HTTPError(Status.UNAUTHORIZED, "Invalid password");
       }
-  
-      const result = await Model.Pin.updateMany(
-        {},
-        {
-          $set: {
-            isDeleted: true,
-          },
-        },
-        {
-          multi: true,
-        }
-      );
-  
-      const message = 'Reset map successfully';
-      res.ok(message, result.message);
+
+      // Delete all pins from the Pin model
+      const pinResult = await Model.Pin.deleteMany({});
+
+      // Delete all items from the Wishlist model
+      const wishlistResult = await Model.Whishlist.deleteMany({});
+
+      const message = "Reset map and wishlist successfully";
+      res.ok(message);
     } catch (err) {
       throw new HTTPError(
         err.status || Status.INTERNAL_SERVER_ERROR,
-        err.message || 'Internal Server Error'
+        err.message || "Internal Server Error"
       );
     }
   }),
+
   // Create a new Pin
   createCustomPin: catchAsync(async (req, res, next) => {
     console.log("createPin is called");
