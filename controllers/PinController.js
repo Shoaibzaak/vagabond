@@ -271,4 +271,81 @@ module.exports = {
       responseHelper.requestfailure(res, error);
     }
   }),
+  hidePins: catchAsync(async (req, res, next) => {
+    console.log("Pindetails is called");
+    try {
+      const startDateParam = req.query.startDate; // Assuming you pass the start date as a query parameter in "MM-YY" format
+      const endDateParam = req.query.endDate; // Assuming you pass the end date as a query parameter in "MM-YY" format
+
+      if (!startDateParam || !endDateParam) {
+        return responseHelper.success(
+          res,
+          { pin: [], count: 0 },
+          "Start date and end date parameters are required."
+        );
+      }
+
+      const [startMonth, startYear] = startDateParam.split("/");
+      const [endMonth, endYear] = endDateParam.split("/");
+
+      if (!startMonth || !startYear || !endMonth || !endYear) {
+        return responseHelper.success(
+          res,
+          { pin: [], count: 0 },
+          "Invalid date parameter format."
+        );
+      }
+
+      // Constructing startDate and endDate
+      const startDate = new Date(
+        Date.UTC(Number(`20${startYear}`), Number(startMonth) - 1, 1)
+      );
+      const endDate = new Date(
+        Date.UTC(Number(`20${endYear}`), Number(endMonth), 1)
+      );
+
+      console.log("startDate:", startDate.toISOString());
+      console.log("endDate:", endDate.toISOString());
+
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.log("Invalid dates");
+        return responseHelper.success(
+          res,
+          { pin: [], count: 0 },
+          "Invalid date parameter values."
+        );
+      }
+      const query = {
+        createdAt: {
+          $gte: startDate,
+          $lt: endDate,
+        },
+      };
+
+      const pins = await Model.Pin.find(query);
+
+      const pinSize = pins.length;
+      const result = {
+        pin: pins,
+        count: pinSize,
+      };
+
+      if (pinSize === 0) {
+        return responseHelper.success(
+          res,
+          result,
+          "No pins found outside the specified date range."
+        );
+      }
+
+      return responseHelper.success(
+        res,
+        result,
+        "Pindetails found successfully"
+      );
+    } catch (error) {
+      console.error("Error:", error);
+      responseHelper.requestfailure(res, error);
+    }
+  }),
 };
