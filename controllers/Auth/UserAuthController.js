@@ -388,21 +388,21 @@ module.exports = {
   }),
    // Retrieve  user by userId
   getUser: catchAsync(async (req, res, next) => {
-    console.log("findPinById is called");
+    console.log("findUserById is called");
     try {
       var userId = req.params.id;
       console.log(userId);
 
       var result = await Model.User.findById({ _id: userId })
-      var pins = await Model.Pin.find()
+      var Users = await Model.User.find()
       var Whislist = await Model.Whishlist.find()
       var category = await Model.Category.find()
      
-      const pinSize = pins.length;
+      const UserSize = Users.length;
       const whisListSize = Whislist.length;
       const categoryize = category.length;
       const countModels = {
-        countPin: pinSize,
+        countUser: UserSize,
         countWhishList: whisListSize,
         countCategory: categoryize
       };
@@ -417,6 +417,30 @@ module.exports = {
       responseHelper.requestfailure(res, error);
     }
   }),
-
+ // Update a User user
+ updateUser: catchAsync(async (req, res, next) => {
+  // Get the User user data from the request body
+  var userData = req.body;
+  try {
+    
+    var result = await Model.User.findOneAndUpdate(
+      { _id: userData.UserId },
+      userData,
+      {
+        new: true,
+      }
+    );
+    // Check if the User user was found and updated successfully
+    if (!result) {
+      return res.status(Status.NOT_FOUND).json({
+        error: "User not found",
+      });
+    }
+    var message = "User  status updated successfully";
+    res.ok(message, result);
+  } catch (err) {
+    throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+  }
+}),
   
 };

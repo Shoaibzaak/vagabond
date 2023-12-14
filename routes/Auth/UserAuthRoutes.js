@@ -36,6 +36,7 @@ var upload = Multer({
 
 router.route("/register").post(Controller.UserAuthController.register);
 router.route("/getUserProfile/:id").get(Authentication.UserAuth,Controller.UserAuthController.getUser);
+router.route("/updateUser").post(Authentication.UserAuth,Controller.UserAuthController.updateUser);
 router.route("/accontVerification").post(Controller.UserAuthController.accountVerification);
 router.route("/login").post(Controller.UserAuthController.login);
 router.route("/forgetpassword").post(Controller.UserAuthController.forgetPassword);

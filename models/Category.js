@@ -7,7 +7,7 @@ const categoryModel = new Schema(
       type: String,
       required:true
     },
-    shade:{
+    color:{
         type:String
     }
    
