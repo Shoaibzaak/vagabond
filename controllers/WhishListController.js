@@ -103,15 +103,19 @@ module.exports = {
         try {
 
             // Update the Whishlist user with the updated data
-            var result = await Model.Whishlist.findOneAndUpdate(
+            var updatedWhishlist = await Model.Whishlist.findOneAndUpdate(
                 { _id: WhishlistUserData.WhishlistId },
                 WhishlistUserData,
                 {
                     new: true,
                 }
             );
+            if (!updatedWhishlist) {
+                return res.notFound("Whishlist user not found");
+            }
+    
             var message = "Whishlist  status updated successfully";
-            res.ok(message, result);
+            res.ok(message, updatedWhishlist);
         } catch (err) {
             throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
         }
