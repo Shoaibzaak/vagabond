@@ -361,7 +361,7 @@ module.exports = {
       // Update user model with the image URL
       const result = await Model.User.findByIdAndUpdate(
         { _id: userData.userId },
-        { profilePic: cloudinaryResult }, // Assuming 'profilePic' is a field in your user model
+        { profilePic: cloudinaryResult ,bio:userData.bio}, // Assuming 'profilePic' is a field in your user model
         { new: true }
       );
   
