@@ -121,7 +121,7 @@ module.exports = {
     declineCategory: catchAsync(async (req, res, next) => {
         var CategoryId = req.params.id
         try {
-            const CategoryUser = await Model.Category.findOneAndDelete({_id:CategoryId})
+            const CategoryUser = await Model.Category.findByIdAndDelete({_id:CategoryId})
             if (!CategoryUser)
                 return res.badRequest("Category  Not Found in our records");
             var message = "Category user deleted successfully";
