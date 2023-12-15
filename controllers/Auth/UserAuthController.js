@@ -312,15 +312,26 @@ module.exports = {
     console.log("createContact is called");
     try {
       var contactData = req.body;
+      const existingContact = await Model.Contact.findOne({
+        email: contactData.email,
+      });
 
-      var result = await userHelper.createContact(contactData);
+      if (existingContact) {
+        return responseHelper.badRequest(
+          res,
+          "Contact with this email already exists."
+        );
+      }
 
+      const contact = new Model.Contact(contactData);
+
+      await contact.save();
       var message = "contact created successfully";
-      if (result == null) {
+      if (contact == null) {
         message = "contact does not exist.";
       }
 
-      return responseHelper.success(res, result, message);
+      return responseHelper.success(res, contact, message);
     } catch (error) {
       responseHelper.requestfailure(res, error);
     }
@@ -343,71 +354,94 @@ module.exports = {
     }
   }),
 
+    // decline user
+    declineAccount: catchAsync(async (req, res, next) => {
+      var userId = req.params.id;
+    try {
+      const userUser = await Model.User.findByIdAndDelete(userId);
+      if (!userUser) return res.badRequest("user  Not Found in our records");
+      var message = "user deleted successfully";
+      res.ok(message, userUser);
+    } catch (err) {
+      throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+    }
+    }),
+
   uploadProfilePic: catchAsync(async (req, res, next) => {
     const userData = req.body;
-    console.log('uploadProfilePic has been called');
+    console.log("uploadProfilePic has been called");
     try {
       // Check if profile picture file is present
-      if (!req.files || !req.files.profilePic || req.files.profilePic.length === 0) {
-        console.log('No profile pic is selected');
+      if (
+        !req.files ||
+        !req.files.profilePic ||
+        req.files.profilePic.length === 0
+      ) {
+        console.log("No profile pic is selected");
         return res.badRequest("No profile pic is selected");
       }
-  
+
       const file = req.files.profilePic[0]; // Assuming you only want to handle one profile picture
       const { path } = file;
-  
+
       // Upload the file to Cloudinary
-      const cloudinaryResult = await cloudUpload.cloudinaryUpload(path); 
+      const cloudinaryResult = await cloudUpload.cloudinaryUpload(path);
       // Update user model with the image URL
       const result = await Model.User.findByIdAndUpdate(
         { _id: userData.userId },
-        { profilePic: cloudinaryResult ,bio:userData.bio,address:userData.address}, // Assuming 'profilePic' is a field in your user model
+        {
+          profilePic: cloudinaryResult,
+          bio: userData.bio,
+          address: userData.address,
+        }, // Assuming 'profilePic' is a field in your user model
         { new: true }
       );
-  
+
       if (!result) {
-        console.log('User not found');
+        console.log("User not found");
         throw new HTTPError(Status.NOT_FOUND, "User not found");
       }
-  
+
       const message = "Profile picture uploaded successfully";
       console.log(message);
       res.ok(message, result);
     } catch (err) {
       // Log the error for debugging purposes
       console.error(err);
-  
+
       // Handle specific HTTP errors
       if (err instanceof HTTPError) {
         res.status(err.statusCode).json({ error: err.message });
       } else {
         // For unhandled errors, return a generic 500 Internal Server Error
-        res.status(Status.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+        res
+          .status(Status.INTERNAL_SERVER_ERROR)
+          .json({ error: "Internal Server Error" });
       }
     }
   }),
-   // Retrieve  user by userId
+  // Retrieve  user by userId
   getUser: catchAsync(async (req, res, next) => {
     console.log("findUserById is called");
     try {
       var userId = req.params.id;
       console.log(userId);
 
-      var result = await Model.User.findById({ _id: userId })
-      var Users = await Model.User.find()
-      var Whislist = await Model.Whishlist.find()
-      var publicPins = await Model.Pin.find({pinType:"PUBLIC"})
-      var privatePins = await Model.Pin.find({pinType:"PRIVATE"})
-     
+      var result = await Model.User.findById({ _id: userId });
+      var Users = await Model.User.find();
+      var Whislist = await Model.Whishlist.find();
+      var publicusers = await Model.user.find({ userType: "PUBLIC" });
+      var privateusers = await Model.user.find({ userType: "PRIVATE" });
+
       const UserSize = Users.length;
       const whisListSize = Whislist.length;
-      const publicPinSize = publicPins.length;
-      const privatePinSize = privatePins.length;
+      const publicuserSize = publicusers.length;
+      const privateuserSize = privateusers.length;
       const countModels = {
         countUser: UserSize,
         countWhishList: whisListSize,
-        publicPins: publicPinSize,
-        privatePIns: privatePinSize
+        publicusers: publicuserSize,
+        privateusers: privateuserSize,
       };
 
       var message = "userId found successfully";
@@ -415,35 +449,33 @@ module.exports = {
         message = "userId does not exist.";
       }
 
-      return responseHelper.success(res, result, countModels,message);
+      return responseHelper.success(res, result, countModels, message);
     } catch (error) {
       responseHelper.requestfailure(res, error);
     }
   }),
- // Update a User user
- updateUser: catchAsync(async (req, res, next) => {
-  // Get the User user data from the request body
-  var userData = req.body;
-  try {
-    
-    var result = await Model.User.findOneAndUpdate(
-      { _id: userData.UserId },
-      userData,
-      {
-        new: true,
+  // Update a User user
+  updateUser: catchAsync(async (req, res, next) => {
+    // Get the User user data from the request body
+    var userData = req.body;
+    try {
+      var result = await Model.User.findOneAndUpdate(
+        { _id: userData.UserId },
+        userData,
+        {
+          new: true,
+        }
+      );
+      // Check if the User user was found and updated successfully
+      if (!result) {
+        return res.status(Status.NOT_FOUND).json({
+          error: "User not found",
+        });
       }
-    );
-    // Check if the User user was found and updated successfully
-    if (!result) {
-      return res.status(Status.NOT_FOUND).json({
-        error: "User not found",
-      });
+      var message = "User  status updated successfully";
+      res.ok(message, result);
+    } catch (err) {
+      throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
     }
-    var message = "User  status updated successfully";
-    res.ok(message, result);
-  } catch (err) {
-    throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
-  }
-}),
-  
+  }),
 };
