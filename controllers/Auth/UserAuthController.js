@@ -430,8 +430,8 @@ module.exports = {
       var result = await Model.User.findById({ _id: userId });
       var Users = await Model.User.find();
       var Whislist = await Model.Whishlist.find();
-      var publicusers = await Model.user.find({ userType: "PUBLIC" });
-      var privateusers = await Model.user.find({ userType: "PRIVATE" });
+      var publicusers = await Model.User.find({ userType: "PUBLIC" });
+      var privateusers = await Model.User.find({ userType: "PRIVATE" });
 
       const UserSize = Users.length;
       const whisListSize = Whislist.length;
