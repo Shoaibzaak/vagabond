@@ -440,8 +440,8 @@ module.exports = {
       const countModels = {
         countUser: UserSize,
         countWhishList: whisListSize,
-        publicusers: publicuserSize,
-        privateusers: privateuserSize,
+        publicpins: publicuserSize,
+        privatepins: privateuserSize,
       };
 
       var message = "userId found successfully";
