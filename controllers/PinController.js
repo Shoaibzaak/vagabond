@@ -106,33 +106,39 @@ module.exports = {
   },
 
   // Get all Pin users with full details
-  getAllPinUsers: catchAsync(async (req, res, next) => {
+getAllPinUsers: catchAsync(async (req, res, next) => {
     console.log("Pindetails is called");
     try {
-      // var pinData = req.body;
+        const userId = req.user.id; // Assuming the user ID is available in the request
 
-      // var result = await pinHelper.getpinWithFullDetails(pinData.sortproperty, pinData.sortorder, pinData.offset, pinData.limit, pinData.query);
-      const pageNumber = parseInt(req.query.pageNumber) || 0;
-      const limit = parseInt(req.query.limit) || 10;
-      var message = "pindetails found successfully";
-      var pins = await Model.Pin.find()
-        .skip(pageNumber * limit - limit)
-        .limit(limit)
-        .sort("-_id");
-      const pinSize = pins.length;
-      const result = {
-        pin: pins,
-        count: pinSize,
-        limit: limit,
-      };
-      if (result == null) {
-        message = "pindetails does not exist.";
-      }
-      return responseHelper.success(res, result, message);
+        const pageNumber = parseInt(req.query.pageNumber) || 0;
+        const limit = parseInt(req.query.limit) || 10;
+        var message = "pindetails found successfully";
+
+        // Modify the query to include a condition based on the user ID
+        var pins = await Model.Pin.find({ userId: userId })
+            .skip(pageNumber * limit - limit)
+            .limit(limit)
+            .sort("-_id");
+
+        const pinSize = pins.length;
+
+        const result = {
+            pin: pins,
+            count: pinSize,
+            limit: limit,
+        };
+
+        if (pinSize === 0) {
+            message = "pindetails do not exist for this user.";
+        }
+
+        return responseHelper.success(res, result, message);
     } catch (error) {
-      responseHelper.requestfailure(res, error);
+        responseHelper.requestfailure(res, error);
     }
-  }),
+}),
+
 
   // Update a Pin user
   updatePin: catchAsync(async (req, res, next) => {

@@ -65,36 +65,40 @@ module.exports = {
     }),
 
 
-    // Get all Whishlist users with full details
     getAllWhishlistUsers: catchAsync(async (req, res, next) => {
-        console.log("Whishlistdetails is called");
+        console.log("Wishlist details are called");
         try {
-            // var WhishlistData = req.body;
-
-            // var result = await WhishlistHelper.getWhishListWithFullDetails(WhishlistData.sortproperty, WhishlistData.sortorder, WhishlistData.offset, WhishlistData.limit, WhishlistData.query);
+            const userId = req.user.id; // Assuming the user ID is available in the request
+    
             const pageNumber = parseInt(req.query.pageNumber) || 0;
             const limit = parseInt(req.query.limit) || 10;
-            var message = "Whishlistdetails found successfully";
-            var whishLists = await Model.Whishlist.find()
+    
+            var message = "Wishlist details found successfully";
+    
+            // Modify the query to filter based on the user ID
+            var wishlistItems = await Model.Whishlist.find({ userId: userId })
                 .skip((pageNumber * limit) - limit)
                 .limit(limit)
-                .sort("-_id")
-                ;
-
-            const whishListSize = whishLists.length
+                .sort("-_id");
+    
+            const wishlistSize = wishlistItems.length;
+    
             const result = {
-                whishList: whishLists,
-                count: whishListSize,
+                wishlist: wishlistItems,
+                count: wishlistSize,
                 limit: limit
+            };
+    
+            if (wishlistSize === 0) {
+                message = "Wishlist details do not exist for this user.";
             }
-            if (result == null) {
-                message = "Whishlistdetails does not exist.";
-            }
+    
             return responseHelper.success(res, result, message);
         } catch (error) {
             responseHelper.requestfailure(res, error);
         }
     }),
+    
 
     // Update a Whishlist user
     updateWhishlist: catchAsync(async (req, res, next) => {

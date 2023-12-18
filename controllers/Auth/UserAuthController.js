@@ -421,39 +421,43 @@ module.exports = {
     }
   }),
   // Retrieve  user by userId
-  getUser: catchAsync(async (req, res, next) => {
-    console.log("findUserById is called");
-    try {
+  // Retrieve user by userId with associated public and private pins and wishlist items
+getUser: catchAsync(async (req, res, next) => {
+  console.log("findUserById is called");
+  try {
       var userId = req.params.id;
       console.log(userId);
 
+      // Retrieve the user by ID
       var result = await Model.User.findById({ _id: userId });
-      var Users = await Model.User.find();
-      var Whislist = await Model.Whishlist.find();
-      var publicpins = await Model.Pin.find({ pinType: "PUBLIC" });
-      var privatepins = await Model.Pin.find({ pinType: "PRIVATE" });
 
-      const UserSize = Users.length;
-      const whisListSize = Whislist.length;
-      const publicuserSize = publicpins.length;
-      const privateuserSize = privatepins.length;
+      // Retrieve associated public and private pins
+      var publicPins = await Model.Pin.find({ userId: userId, pinType: "PUBLIC" });
+      var privatePins = await Model.Pin.find({ userId: userId, pinType: "PRIVATE" });
+
+      // Retrieve associated wishlist items
+      var wishlistItems = await Model.Whishlist.find({ userId: userId });
+
+      // Create a countModels object
       const countModels = {
-        countUser: UserSize,
-        countWhishList: whisListSize,
-        publicpins: publicuserSize,
-        privatepins: privateuserSize,
+          countPublicPins: publicPins.length,
+          countPrivatePins: privatePins.length,
+          countWishlistItems: wishlistItems.length,
       };
 
       var message = "userId found successfully";
       if (result == null) {
-        message = "userId does not exist.";
+          message = "userId does not exist.";
       }
 
-      return responseHelper.success(res, result, countModels, message);
-    } catch (error) {
+      // Return the response with the user details, count models, and message
+      return responseHelper.success(res, { user: result, publicPins, privatePins, wishlistItems, countModels }, message);
+  } catch (error) {
+      // Handle errors and send a failure response
       responseHelper.requestfailure(res, error);
-    }
-  }),
+  }
+}),
+
   // Update a User user
   updateUser: catchAsync(async (req, res, next) => {
     // Get the User user data from the request body
