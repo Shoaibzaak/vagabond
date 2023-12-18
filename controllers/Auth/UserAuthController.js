@@ -451,7 +451,7 @@ getUser: catchAsync(async (req, res, next) => {
       }
 
       // Return the response with the user details, count models, and message
-      return responseHelper.success(res, { user: result, publicPins, privatePins, wishlistItems, countModels }, message);
+      return responseHelper.success(res, { user: result, , countModels }, message);
   } catch (error) {
       // Handle errors and send a failure response
       responseHelper.requestfailure(res, error);
