@@ -290,6 +290,8 @@ getAllPinUsers: catchAsync(async (req, res, next) => {
   hidePins: catchAsync(async (req, res, next) => {
     console.log("Pindetails is called");
     try {
+      const userId = req.user._id; // Assuming the authenticated user's ID is stored in the request object
+
       const startDateParam = req.query.startDate; // Assuming you pass the start date as a query parameter in "MM-YY" format
       const endDateParam = req.query.endDate; // Assuming you pass the end date as a query parameter in "MM-YY" format
 
@@ -332,6 +334,7 @@ getAllPinUsers: catchAsync(async (req, res, next) => {
         );
       }
       const query = {
+        userId: userId, // Filter by the logged-in user's ID
         createdAt: {
           $gte: startDate,
           $lt: endDate,
