@@ -64,22 +64,31 @@ module.exports = {
         }
     }),
 
-
     getAllWhishlistUsers: catchAsync(async (req, res, next) => {
         console.log("Wishlist details are called");
         try {
-            const userId = req.user.id; // Assuming the user ID is available in the request
+            const userId = req.user.id;
     
             const pageNumber = parseInt(req.query.pageNumber) || 0;
             const limit = parseInt(req.query.limit) || 10;
+            
+            // Determine the sort order based on the user's query parameter
+            let sortQuery;
+            const sortBy = req.query.sortBy;
+            if (sortBy === 'date') {
+                sortQuery = { createdAt: -1 }; // Newest first
+            } else if (sortBy === 'name') {
+                sortQuery = { place: 1 }; // Alphabetically
+            } else {
+                sortQuery = { _id: -1 }; // Default sorting by _id (or any other default you prefer)
+            }
     
             var message = "Wishlist details found successfully";
     
-            // Modify the query to filter based on the user ID
             var wishlistItems = await Model.Whishlist.find({ userId: userId })
                 .skip((pageNumber * limit) - limit)
                 .limit(limit)
-                .sort("-_id");
+                .sort(sortQuery);
     
             const wishlistSize = wishlistItems.length;
     
@@ -98,6 +107,7 @@ module.exports = {
             responseHelper.requestfailure(res, error);
         }
     }),
+    
     
 
     // Update a Whishlist user
