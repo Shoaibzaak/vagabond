@@ -15,6 +15,11 @@ const categoryModel = new Schema(
       enum: ["GENERAL", "PRIVATE"],
       default: "PRIVATE",
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
 
   {

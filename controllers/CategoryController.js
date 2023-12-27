@@ -65,12 +65,12 @@ module.exports = {
     console.log("Categorydetails is called");
     try {
       // var CategoryData = req.body;
-
+      const userId = req.user.id; // Assuming the user ID is available in the request
       // var result = await CategoryHelper.getCategoryWithFullDetails(CategoryData.sortproperty, CategoryData.sortorder, CategoryData.offset, CategoryData.limit, CategoryData.query);
       const pageNumber = parseInt(req.query.pageNumber) || 0;
       const limit = parseInt(req.query.limit) || 10;
       var message = "Categorydetails found successfully";
-      var Categorys = await Model.Category.find({categoryType:'PRIVATE'})
+      var Categorys = await Model.Category.find({categoryType:'PRIVATE',userId:userId})
         .skip(pageNumber * limit - limit)
         .limit(limit)
         .sort("-_id");
