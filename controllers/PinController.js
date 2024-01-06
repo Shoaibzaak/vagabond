@@ -119,7 +119,7 @@ getAllPinUsers: catchAsync(async (req, res, next) => {
         var pins = await Model.Pin.find({ userId: userId })
             .skip(pageNumber * limit - limit)
             .limit(limit)
-            .sort("-_id");
+            .sort({ _id: -1 }); // Sort by _id in descending order
 
         const pinSize = pins.length;
 

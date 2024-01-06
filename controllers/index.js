@@ -3,4 +3,5 @@ module.exports = {
   PinController: require("./PinController"),
   WhishListController: require("./WhishListController"),
   CategoryController: require("./CategoryController"),
+  ShadeController: require("./ShadeController")
 };

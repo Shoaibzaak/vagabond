@@ -3,5 +3,6 @@ module.exports = {
   CategoryRoutes: require("./CategoryRoutes"),
   WhishListRoutes: require("./WhishListRoutes"),
   UserAuthRoutes: require("./Auth/UserAuthRoutes"),
+  ShadeRoutes: require("./ShadeRoutes"),
 
 };

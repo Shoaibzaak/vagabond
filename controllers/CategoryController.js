@@ -73,7 +73,7 @@ module.exports = {
       var Categorys = await Model.Category.find({categoryType:'PRIVATE',userId:userId})
         .skip(pageNumber * limit - limit)
         .limit(limit)
-        .sort("-_id");
+        .sort({ _id: -1 }); // Sort by _id in descending order
       const CategorySize = Categorys.length;
       const result = {
         Category: Categorys,

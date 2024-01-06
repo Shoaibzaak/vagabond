@@ -3,6 +3,7 @@ module.exports = {
   Pin: require("./Pin"),
   Contact:require("./ContactList"),
   Whishlist:require("./Whishlist"),
-  Category:require("./Category")
+  Category:require("./Category"),
+  Shade:require("./Shade")
  
 };
