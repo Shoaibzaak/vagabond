@@ -101,7 +101,7 @@ module.exports = {
       }
       const ShadeSize = Shades.length;
       const result = {
-        // Shade: Shades,
+        Shade: Shades,
         count: ShadeSize,
         usaStatesCount: countryName === "USA" ? usaStatesCount : null,
         totalWorldCountriesCount:
