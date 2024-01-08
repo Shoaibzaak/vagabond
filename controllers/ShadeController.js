@@ -94,7 +94,7 @@ module.exports = {
           userId: userId,
         });
       } else {
-        return responseHelper.requestfailure(
+        return responseHelper.badRequest(
           res,
           "Invalid countryName. Please provide 'USA' or 'Others'."
         );

@@ -1,23 +1,15 @@
-
-const _ = require('lodash');
-
 let success = (response, data, message, token) => {
-
     let successResponse = {
         status: 'Success',
         message: message
     };
     let status = 200;
     if (data) {
-        _.extend(successResponse, {
+        successResponse = {
+            ...successResponse,
             data: data
-        });
+        };
     }
-    // if (token) {
-    //     _.extend(successResponse, {
-    //         token: token
-    //     });
-    // }
 
     response.status(status).json(successResponse);
 };
@@ -27,8 +19,8 @@ let systemfailure = (response, err) => {
         'Error in handling this request. ',
         'Please contact system admin.'
     ].join('');
-    // let status = 500;
-    let status = 500; // android developers needs 200 status everywhere -_-
+
+    let status = 500;
 
     if (typeof err === 'object' && err.message) {
         message = err.message;
@@ -43,14 +35,12 @@ let systemfailure = (response, err) => {
 };
 
 let requestfailure = (response, err, jsonerr = null) => {
-    // let status = 404;
-    let status = 404; // android developers needs 200 status everywhere -_-
+    let status = 404;
 
-
+    let message;
     if (typeof err === 'object' && err.message) {
         message = err.message;
-    }
-    else {
+    } else {
         message = err;
     }
 
@@ -63,8 +53,7 @@ let requestfailure = (response, err, jsonerr = null) => {
 };
 
 let badRequest = (response, message) => {
-    // let status = 400;
-    let status = 400; // android developers needs 200 status everywhere -_-
+    let status = 400;
 
     response.status(status).json({
         status: 'Fail',
