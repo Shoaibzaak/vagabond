@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const shadeModel = new Schema(
   {
-    countrName: {
+    countryName: {
       type: String,
     },
     state: {
