@@ -43,47 +43,81 @@ module.exports = {
     console.log("createShade is called");
 
     try {
-        const ShadeData = req.body;
-    
-        const newShade = new Model.Shade(ShadeData);
-        const savedShade = await newShade.save();
-    
-        if (!savedShade) {
-          return responseHelper.error(res, 500, "Failed to create Shade");
-        }
-    
-        return responseHelper.success(res, savedShade, "Shade created successfully");
-      } catch (error) {
-        // Log detailed error for debugging
-        console.error("Error in createShade:", error);
-        
-        // Handle error response
-        return responseHelper.requestfailure(res, error);
+      const ShadeData = req.body;
+
+      const newShade = new Model.Shade(ShadeData);
+      const savedShade = await newShade.save();
+
+      if (!savedShade) {
+        return responseHelper.error(res, 500, "Failed to create Shade");
       }
+
+      return responseHelper.success(
+        res,
+        savedShade,
+        "Shade created successfully"
+      );
+    } catch (error) {
+      // Log detailed error for debugging
+      console.error("Error in createShade:", error);
+
+      // Handle error response
+      return responseHelper.requestfailure(res, error);
+    }
   }),
 
-  // Get all Shade users with full details
   getAllShadeUsers: catchAsync(async (req, res, next) => {
     console.log("Shadedetails is called");
     try {
-      // var ShadeData = req.body;
       const userId = req.user.id; // Assuming the user ID is available in the request
-      const pageNumber = parseInt(req.query.pageNumber) || 0;
-      const limit = parseInt(req.query.limit) || 10;
       var message = "Shadedetails found successfully";
-      var Shades = await Model.Shade.find({ userId: userId })
-        .skip(pageNumber * limit - limit)
-        .limit(limit)
-        .sort({ _id: -1 }); // Sort by _id in descending order
+
+      // Static data
+      const usaStatesCount = 50;
+      const totalWorldCountriesCount = 195; // This is an approximation; the actual number might vary
+
+      // Retrieve states based on query parameters
+      const countryName = req.query.countryName;
+
+      let Shades;
+
+      if (countryName === "USA") {
+        // If countryName is provided, retrieve all documents with that countryName
+        Shades = await Model.Shade.find({
+          state: { $exists: true },
+          userId: userId,
+        });
+      } else if (countryName === "Others") {
+        // If state is provided, retrieve all documents with that state
+        Shades = await Model.Shade.find({
+          state: { $exists: false },
+          userId: userId,
+        });
+      } else {
+        return responseHelper.requestfailure(
+          res,
+          "Invalid countryName. Please provide 'USA' or 'Others'."
+        );
+      }
       const ShadeSize = Shades.length;
       const result = {
-        Shade: Shades,
+        // Shade: Shades,
         count: ShadeSize,
-        limit: limit,
+        usaStatesCount: countryName === "USA" ? usaStatesCount : null,
+        totalWorldCountriesCount:
+          countryName === "Others" ? totalWorldCountriesCount : null,
+        usaStatesPercentage:
+          countryName === "USA" ? (ShadeSize / usaStatesCount) * 100 : null,
+        totalWorldCountriesPercentage:
+          countryName === "Others"
+            ? (ShadeSize / totalWorldCountriesCount) * 100
+            : null,
       };
-      if (result == null) {
+
+      if (ShadeSize === 0) {
         message = "Shadedetails does not exist.";
       }
+
       return responseHelper.success(res, result, message);
     } catch (error) {
       responseHelper.requestfailure(res, error);
