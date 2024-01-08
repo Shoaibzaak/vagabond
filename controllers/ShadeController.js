@@ -71,58 +71,51 @@ module.exports = {
     try {
       const userId = req.user.id; // Assuming the user ID is available in the request
       var message = "Shadedetails found successfully";
-
+  
       // Static data
       const usaStatesCount = 50;
       const totalWorldCountriesCount = 195; // This is an approximation; the actual number might vary
-
+  
       // Retrieve states based on query parameters
       const countryName = req.query.countryName;
-
+  
       let Shades;
-
+  
       if (countryName === "USA") {
-        // If countryName is provided, retrieve all documents with that countryName
+        // Retrieve all documents with states for the USA
+        Shades = await Model.Shade.find({ userId: userId, state: { $exists: true } });
+      } else  {
+        // Retrieve all documents for countries other than the USA and exclude those with the state field
         Shades = await Model.Shade.find({
-          state: { $exists: true },
           userId: userId,
+          $or: [
+            { countryName: { $ne: "USA" } },
+            { state: { $exists: false } }
+          ]
         });
-      } else if (countryName === "Others") {
-        // If state is provided, retrieve all documents with that state
-        Shades = await Model.Shade.find({
-          state: { $exists: false },
-          userId: userId,
-        });
-      } else {
-        return responseHelper.badRequest(
-          res,
-          "Invalid countryName. Please provide 'USA' or 'Others'."
-        );
       }
+  
       const ShadeSize = Shades.length;
       const result = {
         Shade: Shades,
         count: ShadeSize,
         usaStatesCount: countryName === "USA" ? usaStatesCount : null,
-        totalWorldCountriesCount:
-          countryName === "Others" ? totalWorldCountriesCount : null,
-        usaStatesPercentage:
-          countryName === "USA" ? (ShadeSize / usaStatesCount) * 100 : null,
         totalWorldCountriesPercentage:
-          countryName === "Others"
-            ? (ShadeSize / totalWorldCountriesCount) * 100
-            : null,
+          countryName === "USA"
+            ? null
+            : (ShadeSize / totalWorldCountriesCount) * 100,
       };
-
+  
       if (ShadeSize === 0) {
         message = "Shadedetails does not exist.";
       }
-
+  
       return responseHelper.success(res, result, message);
     } catch (error) {
       responseHelper.requestfailure(res, error);
     }
   }),
+  
 
   // Update a Shade user
   updateShade: catchAsync(async (req, res, next) => {
