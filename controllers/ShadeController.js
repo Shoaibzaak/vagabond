@@ -83,7 +83,7 @@ module.exports = {
       let  AllShades;
       if (countryName === "USA") {
         // Retrieve all documents with states for the USA
-        Shades = await Model.Shade.find({ userId: userId, state: { $exists: true } });
+        Shades = await Model.Shade.find({ userId: userId, state: { $exists: true } }).populate("color");
       } else  {
         // Retrieve all documents for countries other than the USA and exclude those with the state field
        var ShadeCountrySize = await Model.Shade.find({
@@ -92,10 +92,10 @@ module.exports = {
             { countryName: { $ne: "USA" } },
             { state: { $exists: false } }
           ]
-        });
+        }).populate("color");
         AllShades = await Model.Shade.find({
           userId: userId,
-        });
+        }).populate("color");
       }
       
   
