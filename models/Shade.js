@@ -10,8 +10,7 @@ const shadeModel = new Schema(
       type: String,
     },
     color: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      type: String,
     },
     location: {
         type: {
