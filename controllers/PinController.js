@@ -227,10 +227,10 @@ getAllPinUsers: catchAsync(async (req, res, next) => {
       }
 
       // Delete all pins from the Pin model
-      const pinResult = await Model.Pin.deleteMany({});
+      const pinResult = await Model.Pin.deleteMany({userId: req.user.id});
 
       // Delete all items from the Wishlist model
-      const wishlistResult = await Model.Whishlist.deleteMany({});
+      const wishlistResult = await Model.Whishlist.deleteMany({userId: req.user.id});
 
       const message = "Reset map and wishlist successfully";
       res.ok(message);
