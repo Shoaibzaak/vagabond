@@ -106,7 +106,7 @@ module.exports = {
         totalWorldCountriesPercentage:
           countryName === "USA"
             ? null
-            : (ShadeSize / totalWorldCountriesCount) * 100,
+            : ((ShadeSize / totalWorldCountriesCount) * 100).toFixed(2),
       };
   
       if (ShadeSize === 0) {

@@ -44,7 +44,7 @@ router.route("/changepassword").post(Authentication.UserAuth,Controller.UserAuth
 router.route("/resendOtp").post(Controller.UserAuthController.resendOtp);
 router.route("/updatePassword").post(Controller.UserAuthController.updatePassword);
 router.route("/createContact").post(Controller.UserAuthController.createContact);
-router.route("/temporaryDeclineAccount/:id").delete(Controller.UserAuthController.temporaryDeclineAccount);
+router.route("/temporaryDeclineAccount").put( Authentication.UserAuth,Controller.UserAuthController.temporaryDeclineAccount);
 router.route("/declineAccount/:id").delete(Controller.UserAuthController.declineAccount);
 router.route("/uploadProfilePic").post(
   upload.fields([

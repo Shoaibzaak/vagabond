@@ -338,16 +338,29 @@ module.exports = {
   }),
   // decline user
   temporaryDeclineAccount: catchAsync(async (req, res, next) => {
-    var userId = req.params.id;
+    console.log("temporaryDeclineAccount")
     try {
+      const { password } = req.body;
+      const user = await Model.User.findById(req.user.id);
+
+      if (!user) {
+        throw new HTTPError(Status.UNAUTHORIZED, "User not found");
+      }
+
+      // Compare the provided password with the hashed password stored in the user record
+      const passwordMatch = await encrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        throw new HTTPError(Status.UNAUTHORIZED, "Invalid password");
+      }
       var result = await Model.User.findOneAndUpdate(
-        { _id: userId },
+        { _id: user },
         { isDeleted: true },
         {
           new: true,
         }
       );
-      var message = "Account  deleted successfully";
+      var message = "Account  disabled successfully";
       res.ok(message, result);
     } catch (err) {
       throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);

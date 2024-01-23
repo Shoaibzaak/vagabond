@@ -50,16 +50,6 @@ module.exports = {
     try {
       var PinData = req.body;
       PinData.images = [];
-      // if (Array.isArray(req.files.images)) {
-      // for (let i = 0; i < req.files.images.length; i++) {
-      //     const newPath = await cloudinary.uploader.upload(req.files.images[i].originalname,(result)=>{
-      //         console.log(result,'result')
-      //     })
-      //     console.log(newPath, "newPath")
-      //     PinData.images.push(newPath)
-
-      // }
-      // }
 
       PinData.images = [];
       const files = req.files.images;
@@ -106,60 +96,44 @@ module.exports = {
   },
 
   // Get all Pin users with full details
-getAllPinUsers: catchAsync(async (req, res, next) => {
+  getAllPinUsers: catchAsync(async (req, res, next) => {
     console.log("Pindetails is called");
     try {
-        const userId = req.user.id; // Assuming the user ID is available in the request
+      const userId = req.user.id; // Assuming the user ID is available in the request
 
-        const pageNumber = parseInt(req.query.pageNumber) || 0;
-        const limit = parseInt(req.query.limit) || 10;
-        var message = "pindetails found successfully";
+      const pageNumber = parseInt(req.query.pageNumber) || 0;
+      const limit = parseInt(req.query.limit) || 10;
+      var message = "pindetails found successfully";
 
-        // Modify the query to include a condition based on the user ID
-        var pins = await Model.Pin.find({ userId: userId })
-            .skip(pageNumber * limit - limit)
-            .limit(limit)
-            .sort({ _id: -1 }); // Sort by _id in descending order
+      // Modify the query to include a condition based on the user ID
+      var pins = await Model.Pin.find({ userId: userId })
+        .skip(pageNumber * limit - limit)
+        .limit(limit)
+        .sort({ _id: -1 }); // Sort by _id in descending order
 
-        const pinSize = pins.length;
+      const pinSize = pins.length;
 
-        const result = {
-            pin: pins,
-            count: pinSize,
-            limit: limit,
-        };
+      const result = {
+        pin: pins,
+        count: pinSize,
+        limit: limit,
+      };
 
-        if (pinSize === 0) {
-            message = "pindetails do not exist for this user.";
-        }
+      if (pinSize === 0) {
+        message = "pindetails do not exist for this user.";
+      }
 
-        return responseHelper.success(res, result, message);
+      return responseHelper.success(res, result, message);
     } catch (error) {
-        responseHelper.requestfailure(res, error);
+      responseHelper.requestfailure(res, error);
     }
-}),
-
+  }),
 
   // Update a Pin user
   updatePin: catchAsync(async (req, res, next) => {
     // Get the Pin user data from the request body
     var PinUserData = req.body;
     try {
-      // PinUserData.images = [];
-      // const files = req.files.images;
-      // if (req.files.images) {
-      //   for (const file of files) {
-      //     const { path } = file;
-      //     const newPath = await cloudUpload.cloudinaryUpload(path);
-      //     PinUserData.images.push(newPath);
-      //   }
-      // }
-      // if (Array.isArray(req.files.images)) {
-      //     for (let i = 0; i < req.files.images.length; i++) {
-      //         PinUserData.images.push(`public/images/${req.files.images[i].originalname}`)
-
-      //     }
-      // }
       // Update the Pin user with the updated data
       var result = await Model.Pin.findOneAndUpdate(
         { _id: PinUserData.pinId },
@@ -227,10 +201,15 @@ getAllPinUsers: catchAsync(async (req, res, next) => {
       }
 
       // Delete all pins from the Pin model
-      const pinResult = await Model.Pin.deleteMany({userId: req.user.id});
+      const pinResult = await Model.Pin.deleteMany({ userId: req.user.id });
 
       // Delete all items from the Wishlist model
-      const wishlistResult = await Model.Whishlist.deleteMany({userId: req.user.id});
+      const wishlistResult = await Model.Whishlist.deleteMany({
+        userId: req.user.id,
+      });
+
+      // Delete all items from the shade model
+      const shadeResult = await Model.Shade.deleteMany({ userId: req.user.id });
 
       const message = "Reset map and wishlist successfully";
       res.ok(message);
