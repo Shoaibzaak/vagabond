@@ -40,19 +40,13 @@ const UserModel = new Schema(
     device_id: {
       type: String
     },
+    fcmToken: {
+      type: String, // Assuming FCM token is a string
+    },
     isDeleted: {
       type: Boolean,
       default: false,
     },
-    facebookId: {
-      type: String
-    },
-    googleId: {
-      type: String
-    },
-    accessToken: {
-      type: String
-    }
   },
   {
     timestamps: true,
