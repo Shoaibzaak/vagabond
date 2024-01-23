@@ -16,9 +16,6 @@ const encrypt = require("bcrypt");
 const FormData = require("form-data");
 const catchAsync = require("../utils/catchAsync");
 const getDistance = require("../utils/getDistance");
-const pushRepository = require("./pushController");
-const pushRepo = new pushRepository();
-
 module.exports = {
   // Retrieve Category user by CategoryId
   getCategoryUser: catchAsync(async (req, res, next) => {
