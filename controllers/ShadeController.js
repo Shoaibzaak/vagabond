@@ -39,32 +39,42 @@ module.exports = {
   }),
 
   // Create a new Shade
-  createShade: catchAsync(async (req, res, next) => {
-    console.log("createShade is called");
+ // Create or update Shade
+createShade: catchAsync(async (req, res, next) => {
+  console.log("createShade is called");
 
-    try {
-      const ShadeData = req.body;
+  try {
+    const shadeData = req.body;
+    const { countryName, color, location } = shadeData;
+    // Check if a shade with the same countryName and userId exists
+    const existingShade = await Model.Shade.findOne({ countryName });
 
-      const newShade = new Model.Shade(ShadeData);
+    if (existingShade) {
+      // Update existing shade with the new color
+      existingShade.color = color;
+      existingShade.location = location;
+      const updatedShade = await existingShade.save();
+
+      return responseHelper.success(res, updatedShade, "Shade updated successfully");
+    } else {
+      // Create a new shade if it doesn't exist
+      const newShade = new Model.Shade(shadeData);
       const savedShade = await newShade.save();
 
       if (!savedShade) {
         return responseHelper.error(res, 500, "Failed to create Shade");
       }
 
-      return responseHelper.success(
-        res,
-        savedShade,
-        "Shade created successfully"
-      );
-    } catch (error) {
-      // Log detailed error for debugging
-      console.error("Error in createShade:", error);
-
-      // Handle error response
-      return responseHelper.requestfailure(res, error);
+      return responseHelper.success(res, savedShade, "Shade created successfully");
     }
-  }),
+  } catch (error) {
+    // Log detailed error for debugging
+    console.error("Error in createShade:", error);
+
+    // Handle error response
+    return responseHelper.requestfailure(res, error);
+  }
+}),
 
   getAllShadeUsers: catchAsync(async (req, res, next) => {
     console.log("Shadedetails is called");
