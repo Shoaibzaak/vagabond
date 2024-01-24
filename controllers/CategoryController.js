@@ -9,13 +9,7 @@ const responseHelper = require("../helper/response.helper");
 const CategoryHelper = require("../helper/category.helper");
 const Status = require("../status");
 const moment = require("moment");
-const cloudUpload = require("../cloudinary");
-const fs = require("fs");
-const path = require("path");
-const encrypt = require("bcrypt");
-const FormData = require("form-data");
 const catchAsync = require("../utils/catchAsync");
-const getDistance = require("../utils/getDistance");
 module.exports = {
   // Retrieve Category user by CategoryId
   getCategoryUser: catchAsync(async (req, res, next) => {
