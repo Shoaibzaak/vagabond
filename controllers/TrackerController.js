@@ -33,8 +33,6 @@ module.exports = {
       // Save the track to the database
       const savedTrack = await newTrack.save();
      // Send push notification to the user
-     
-    // sendPushNotification(userId, `Your trip '${tripName}' is completed. Total distance: ${distance} miles`);
       // If the user has completed the desired distance, send a notification
     //   if (completedDistance >= distance) {
     //     sendPushNotification(userId, `Congratulations! You have completed ${distance} miles for trip: ${tripName}`);
