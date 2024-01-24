@@ -3,23 +3,34 @@ const Schema = mongoose.Schema;
 
 const WhishlistModel = new Schema(
   {
+    countryName: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
     place: {
       type: String,
-      required:true
+      required: true,
     },
     location: {
-        type: {
-          type: String, // Don't do `{ location: { type: String } }`
-          enum: ['Point'], // 'location.type' must be 'Point'
-        },
-        coordinates: {
-          type: [Number],
-        }
+      type: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ["Point"], // 'location.type' must be 'Point'
       },
-    userId:{type: mongoose.Schema.Types.ObjectId,ref: "User",required:true},
-    category:{
-      type: mongoose.Schema.Types.ObjectId,ref: "Category"
-    }
+      coordinates: {
+        type: [Number],
+      },
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
   },
 
   {
