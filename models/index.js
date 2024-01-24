@@ -4,6 +4,7 @@ module.exports = {
   Contact:require("./ContactList"),
   Whishlist:require("./Whishlist"),
   Category:require("./Category"),
-  Shade:require("./Shade")
+  Shade:require("./Shade"),
+  Tracker:require("./TrackerInfo")
  
 };

@@ -3,5 +3,6 @@ module.exports = {
   PinController: require("./PinController"),
   WhishListController: require("./WhishListController"),
   CategoryController: require("./CategoryController"),
-  ShadeController: require("./ShadeController")
+  ShadeController: require("./ShadeController"),
+  TrackerController: require("./TrackerController"),
 };

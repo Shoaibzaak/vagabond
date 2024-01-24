@@ -4,5 +4,5 @@ module.exports = {
   WhishListRoutes: require("./WhishListRoutes"),
   UserAuthRoutes: require("./Auth/UserAuthRoutes"),
   ShadeRoutes: require("./ShadeRoutes"),
-
+  TrackRoutes: require("./TrackRoutes"),
 };
