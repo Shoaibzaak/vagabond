@@ -23,6 +23,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fcm-node": "^1.6.1",
+    "firebase-admin": "^12.0.0",
     "handlebars": "^4.7.8",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
