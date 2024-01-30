@@ -42,7 +42,7 @@ module.exports = {
         otp,
       };
       await Services.EmailService.sendEmail(
-        "/public/otpVerification.html",
+        "public/otpVerification.html",
         otpCode,
         email,
         "User Account Email Verification | vagabond"
