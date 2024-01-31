@@ -37,15 +37,15 @@ router.route("/createTrack").post(
   Authentication.UserAuth,
   Controller.TrackerController.createTracker);
 
-//  get All Track
-router.route("/getAllTrack").get(
+  // get Track
+router.route("/getTrack/:id").get(
   Authentication.UserAuth,
-  Controller.TrackerController.getAllTrackerUsers);
+  Controller.TrackerController.getTrackerUser);
 
-// delete ategory
-router.route("/declineTrack/:id").delete(
+// update Track
+router.route("/updateTrack/:id").put(
   Authentication.UserAuth,
-  Controller.TrackerController.declineTracker);
+  Controller.TrackerController.updateTracker);
 
 
 module.exports = router;

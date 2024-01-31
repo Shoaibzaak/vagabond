@@ -8,7 +8,21 @@ const catchAsync = require("../utils/catchAsync");
 module.exports = {
   // Retrieve Tracker user by TrackerId
   getTrackerUser: catchAsync(async (req, res, next) => {
-    console.log("findTrackerById is called");
+    try {
+      var TrackerId = req.params.id;
+      console.log(TrackerId);
+
+      const result = await Model.Tracker.findById(TrackerId);
+
+      var message = "TrackerId found successfully";
+      if (result == null) {
+        message = "TrackerId does not exist.";
+      }
+
+      return responseHelper.success(res, result, message);
+    } catch (error) {
+      responseHelper.requestfailure(res, error);
+    }
   }),
 
   // Create a new Tracker
@@ -46,23 +60,26 @@ module.exports = {
     }
   }),
 
-  getAllTrackerUsers: catchAsync(async (req, res, next) => {
-    console.log("Wishlist details are called");
-  }),
 
-  // Delete a Tracker user
-  declineTracker: catchAsync(async (req, res, next) => {
-    var TrackerId = req.params.id;
-    try {
-      const TrackerUser = await Model.Tracker.findByIdAndDelete({
-        _id: TrackerId,
-      });
-      if (!TrackerUser)
-        return res.badRequest("Tracker  Not Found in our records");
-      var message = "Tracker user deleted successfully";
-      res.ok(message, TrackerUser);
-    } catch (err) {
-      throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
-    }
-  }),
+// Update a Tracker user
+updateTracker: catchAsync(async (req, res, next) => {
+  var TrackerId = req.params.id;
+  try {
+    // Assuming req.body contains the updated information for the Tracker user
+    const updatedTrackerUser = await Model.Tracker.findByIdAndUpdate(
+      TrackerId,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedTrackerUser)
+      return res.badRequest("Tracker Not Found in our records");
+
+    var message = "Tracker user updated successfully";
+    res.ok(message, updatedTrackerUser);
+  } catch (err) {
+    throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+  }
+}),
+
 };
