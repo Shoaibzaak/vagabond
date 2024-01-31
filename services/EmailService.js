@@ -1,7 +1,7 @@
 var nodeMailer = require("nodemailer");
 const fs = require("fs");
 const handlebars = require("handlebars");
-
+const path = require("path");
 var transporter = nodeMailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -24,30 +24,32 @@ var readHTMLFile = function (path, callback) {
 };
 
 module.exports = {
-	sendEmail: (tempateName, replacements, to, subject) => {
-	//   const { sender, recipients, subject, html, text } = payload;
+	sendEmail: (templateName, replacements, to, subject) => {
 	  return new Promise((resolve, reject) => {
-			readHTMLFile( tempateName, async function (err, html) {
-		if (err) {
+		// Assuming the template file is in the same directory as EmailService.js
+		const templatePath = path.resolve(__dirname, templateName);
+  
+		readHTMLFile(templatePath, async function (err, html) {
+		  if (err) {
 			console.log(err);
-			return;
-		}
-   
-	  	var template = await handlebars.compile(html);
-	  	htmlToSend = template(replacements);
+			return reject(err);
+		  }
+  
+		  var template = await handlebars.compile(html);
+		  htmlToSend = template(replacements);
 		  var mailOptions = {
 			from: from,
 			to: to,
 			subject,
 			html: htmlToSend
 		  };
-	  	transporter.sendMail(mailOptions, (error, info) => {
+		  transporter.sendMail(mailOptions, (error, info) => {
 			if (error) {
 			  return reject(error);
 			}
 			return resolve(info);
 		  });
-	});
+		});
 	  });
 	},
   };
