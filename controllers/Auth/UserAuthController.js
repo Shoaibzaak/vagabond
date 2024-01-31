@@ -41,12 +41,22 @@ module.exports = {
       let otpCode = {
         otp,
       };
+      // Construct the email message with the OTP
+      const emailMessage = `Thank you for registering with Vagabond.\n\nYour verification code is: ${otp}`;
+
+      // Send the email with the message directly
       await Services.EmailService.sendEmail(
-        "otpVerification.html",
-        otpCode,
+        emailMessage,
+        otp,
         email,
         "User Account Email Verification | vagabond"
       );
+      // await Services.EmailService.sendEmail(
+      //   "public/otpVerification.html",
+      //   otpCode,
+      //   email,
+      //   "User Account Email Verification | vagabond"
+      // );
       return res.ok(
         "Registration successful. A verification code has been sent to your email.",
         User
@@ -149,16 +159,29 @@ module.exports = {
     let otpCode = {
       otp,
     };
-    // const token =  Services.JwtService.issue({
-    //   id: Services.HashService.encrypt(user._id),
-    // })
-    // console.log(token)
+    // Construct the email message with the OTP
+    const emailMessage = `Thank you for registering with Vagabond.\n\nYour verification code is: ${otp}`;
+
+    // Send the email with the message directly
     await Services.EmailService.sendEmail(
-      "public/otpVerification.html",
-      otpCode,
+      emailMessage,
+      otp,
       email,
-      "Reset Password | In VAGABOND"
+      "User Account Email Verification | vagabond"
     );
+    
+      /* start   this code is used for send html templates through path define not working due to vercel*/
+    
+    // await Services.EmailService.sendEmail(
+    //   "public/otpVerification.html",
+    //   otpCode,
+    //   email,
+    //   "Reset Password | In VAGABOND"
+    // );
+    
+      /* end */
+    
+
     return res.ok("Reset password otp has been sent to your registered email.");
   }),
 
@@ -338,7 +361,7 @@ module.exports = {
   }),
   // decline user
   temporaryDeclineAccount: catchAsync(async (req, res, next) => {
-    console.log("temporaryDeclineAccount")
+    console.log("temporaryDeclineAccount");
     try {
       const { password } = req.body;
       const user = await Model.User.findById(req.user.id);
@@ -367,9 +390,9 @@ module.exports = {
     }
   }),
 
-    // decline user
-    declineAccount: catchAsync(async (req, res, next) => {
-      var userId = req.params.id;
+  // decline user
+  declineAccount: catchAsync(async (req, res, next) => {
+    var userId = req.params.id;
     try {
       const userUser = await Model.User.findByIdAndDelete(userId);
       if (!userUser) return res.badRequest("user  Not Found in our records");
@@ -378,7 +401,7 @@ module.exports = {
     } catch (err) {
       throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
     }
-    }),
+  }),
 
   uploadProfilePic: catchAsync(async (req, res, next) => {
     const userData = req.body;
@@ -435,9 +458,9 @@ module.exports = {
   }),
   // Retrieve  user by userId
   // Retrieve user by userId with associated public and private pins and wishlist items
-getUser: catchAsync(async (req, res, next) => {
-  console.log("findUserById is called");
-  try {
+  getUser: catchAsync(async (req, res, next) => {
+    console.log("findUserById is called");
+    try {
       var userId = req.params.id;
       console.log(userId);
 
@@ -445,31 +468,41 @@ getUser: catchAsync(async (req, res, next) => {
       var result = await Model.User.findById({ _id: userId });
 
       // Retrieve associated public and private pins
-      var publicPins = await Model.Pin.find({ userId: userId, pinType: "PUBLIC" });
-      var privatePins = await Model.Pin.find({ userId: userId, pinType: "PRIVATE" });
+      var publicPins = await Model.Pin.find({
+        userId: userId,
+        pinType: "PUBLIC",
+      });
+      var privatePins = await Model.Pin.find({
+        userId: userId,
+        pinType: "PRIVATE",
+      });
 
       // Retrieve associated wishlist items
       var wishlistItems = await Model.Whishlist.find({ userId: userId });
 
       // Create a countModels object
       const countModels = {
-          countPublicPins: publicPins.length,
-          countPrivatePins: privatePins.length,
-          countWishlistItems: wishlistItems.length,
+        countPublicPins: publicPins.length,
+        countPrivatePins: privatePins.length,
+        countWishlistItems: wishlistItems.length,
       };
 
       var message = "userId found successfully";
       if (result == null) {
-          message = "userId does not exist.";
+        message = "userId does not exist.";
       }
 
       // Return the response with the user details, count models, and message
-      return responseHelper.success(res, { user: result,  countModels }, message);
-  } catch (error) {
+      return responseHelper.success(
+        res,
+        { user: result, countModels },
+        message
+      );
+    } catch (error) {
       // Handle errors and send a failure response
       responseHelper.requestfailure(res, error);
-  }
-}),
+    }
+  }),
 
   // Update a User user
   updateUser: catchAsync(async (req, res, next) => {
