@@ -46,12 +46,11 @@ module.exports = {
 
       // Save the track to the database
       const savedTrack = await newTrack.save();
-     // Send push notification to the user
+      // Send push notification to the user
       // If the user has completed the desired distance, send a notification
-    //   if (completedDistance >= distance) {
-    //     sendPushNotification(userId, `Congratulations! You have completed ${distance} miles for trip: ${tripName}`);
-    //   }
-  
+      //   if (completedDistance >= distance) {
+      //     sendPushNotification(userId, `Congratulations! You have completed ${distance} miles for trip: ${tripName}`);
+      //   }
 
       // Return the saved track as a response
       return res.ok("track created successfully", savedTrack);
@@ -60,26 +59,52 @@ module.exports = {
     }
   }),
 
+  // Update a Tracker user
+  updateTracker: catchAsync(async (req, res, next) => {
+    var TrackerId = req.params.id;
+    try {
+      // Assuming req.body contains the updated information for the Tracker user
+      const updatedTrackerUser = await Model.Tracker.findByIdAndUpdate(
+        TrackerId,
+        req.body,
+        { new: true, runValidators: true }
+      );
 
-// Update a Tracker user
-updateTracker: catchAsync(async (req, res, next) => {
-  var TrackerId = req.params.id;
-  try {
-    // Assuming req.body contains the updated information for the Tracker user
-    const updatedTrackerUser = await Model.Tracker.findByIdAndUpdate(
-      TrackerId,
-      req.body,
-      { new: true, runValidators: true }
-    );
+      if (!updatedTrackerUser)
+        return res.badRequest("Tracker Not Found in our records");
 
-    if (!updatedTrackerUser)
-      return res.badRequest("Tracker Not Found in our records");
+      var message = "Tracker user updated successfully";
+      res.ok(message, updatedTrackerUser);
+    } catch (err) {
+      throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+    }
+  }),
+  getAllTracker: catchAsync(async (req, res, next) => {
+    console.log("trackdetails is called");
+    try {
+      const userId = req.user.id; // Assuming the user ID is available in the request
+      const tracks = await Model.Tracker.find({ userId: userId }).sort("-_id");
+      const trackSize = tracks.length;
 
-    var message = "Tracker user updated successfully";
-    res.ok(message, updatedTrackerUser);
-  } catch (err) {
-    throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
-  }
-}),
+      const result = {
+        track: tracks,
+        count: trackSize,
+      };
 
+      // Check if no tracks are found
+      if (trackSize === 0) {
+        res.notFound("no record found", result?.track);
+      }
+
+      // Return a success response with the result
+      return responseHelper.success(
+        res,
+        result,
+        "trackdetails found successfully"
+      );
+    } catch (error) {
+      // Handle errors and return a failure response
+      responseHelper.requestfailure(res, error);
+    }
+  }),
 };

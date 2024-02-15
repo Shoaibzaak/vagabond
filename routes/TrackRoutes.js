@@ -46,6 +46,9 @@ router.route("/getTrack/:id").get(
 router.route("/updateTrack/:id").put(
   Authentication.UserAuth,
   Controller.TrackerController.updateTracker);
+  router.route("/getAllTracks").get(
+    Authentication.UserAuth,
+    Controller.TrackerController.getAllTracker);
 
 
 module.exports = router;
