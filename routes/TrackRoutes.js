@@ -17,41 +17,40 @@ const userStorage = Multer.diskStorage({
 });
 // const storage = new Multer.memoryStorage();
 
-
-var upload = Multer({ //multer settings
+var upload = Multer({
+  //multer settings
   storage: userStorage,
   fileFilter: function (req, file, callback) {
     var ext = path.extname(file.originalname);
-    if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
-      return callback(new Error('Only images are allowed'))
+    if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg") {
+      return callback(new Error("Only images are allowed"));
     }
-    callback(null, true)
+    callback(null, true);
   },
   limits: {
-    fileSize: 1024 * 1024
-  }
-})
+    fileSize: 1024 * 1024,
+  },
+});
 
-//post Track  
-router.route("/createTrack").post(
-  Authentication.UserAuth,
-  Controller.TrackerController.createTracker);
+//post Track
+router
+  .route("/createTrack")
+  .post(Authentication.UserAuth, Controller.TrackerController.createTracker);
 
-  // get Track
-router.route("/getTrack/:id").get(
-  Authentication.UserAuth,
-  Controller.TrackerController.getTrackerUser);
+// get Track
+router
+  .route("/getTrack/:id")
+  .get(Authentication.UserAuth, Controller.TrackerController.getTrackerUser);
 
 // update Track
-router.route("/updateTrack/:id").put(
-  Authentication.UserAuth,
-  Controller.TrackerController.updateTracker);
-  router.route("/getAllTracks").get(
-    Authentication.UserAuth,
-    Controller.TrackerController.getAllTracker);
-
+router
+  .route("/updateTrack/:id")
+  .put(Authentication.UserAuth, Controller.TrackerController.updateTracker);
+router
+  .route("/getAllTracks")
+  .get(Authentication.UserAuth, Controller.TrackerController.getAllTracker);
+  router
+  .route("/deleteTracker/:id")
+  .delete(Authentication.UserAuth, Controller.TrackerController.declineTrackere);
 
 module.exports = router;
-
-
-

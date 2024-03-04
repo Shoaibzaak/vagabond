@@ -22,6 +22,10 @@ const WhishlistModel = new Schema(
         type: [Number],
       },
     },
+    isVisited:{
+      type: Boolean,
+      default: false,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -107,4 +107,18 @@ module.exports = {
       responseHelper.requestfailure(res, error);
     }
   }),
+  declineTrackere: catchAsync(async (req, res, next) => {
+    var trackerId = req.params.id;
+    try {
+      const trackerUser = await Model.Tracker.findByIdAndDelete({
+        _id: trackerId,
+      });
+      if (!trackerUser)
+        return res.badRequest("tracker  Not Found in our records");
+      var message = "tracker user deleted successfully";
+      res.ok(message, trackerUser);
+    } catch (err) {
+      throw new HTTPError(Status.INTERNAL_SERVER_ERROR, err);
+    }
+  }),
 };
