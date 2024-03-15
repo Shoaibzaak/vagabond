@@ -215,7 +215,7 @@ module.exports = {
       // otp,
       tempPassword,
     };
-    const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${otp}`;
+    const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${tempPassword}`;
 
     // Send the email with the message directly
     await Services.EmailService.sendEmail(
