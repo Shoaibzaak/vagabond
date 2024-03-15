@@ -208,32 +208,28 @@ module.exports = {
           { _id: user._id },
           { $set: { password: hash } }
         );
-        //   // const token = `GHA ${Services.JwtService.issue({
-        //   //   id: Services.HashService.encrypt(user._id),
-        //   // })}`;
-        //   // user = { ...user._doc, usertype: "User" };
-        //   // return res.ok("Password updated successfully and", user);
-        // }
       });
     });
 
-    // if (user) {
-    //   await Model.User.findOneAndUpdate({ _id: user._id }, { $set: { otp: otp, otpExpiry: otpExpiryCode } });
-    // }
     let replacements = {
       // otp,
       tempPassword,
     };
-    // const token =  Services.JwtService.issue({
-    //   id: Services.HashService.encrypt(user._id),
-    // })
-    // console.log(token)
+    const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${otp}`;
+
+    // Send the email with the message directly
     await Services.EmailService.sendEmail(
-      "public/otpResetPass.html",
-      replacements,
+      emailMessage,
+      tempPassword,
       email,
-      "Forget Password | In VAGABOND"
+      "ForgetPassword | vagabond"
     );
+    // await Services.EmailService.sendEmail(
+    //   "public/otpResetPass.html",
+    //   replacements,
+    //   email,
+    //   "Forget Password | In VAGABOND"
+    // );
     return res.ok(
       "Temporary password  has been sent to your registered email."
     );
