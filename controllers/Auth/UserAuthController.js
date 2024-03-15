@@ -192,38 +192,28 @@ module.exports = {
     user = await Model.User.findOne({ email });
 
     if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
-    // if (user.isEmailConfirmed == false) throw new HTTPError(Status.BAD_REQUEST, "Your account is not verfied");
     const otp = otpService.issue();
     const otpExpiryCode = moment().add(10, "minutes").valueOf();
-    const tempPassword = referralCodes.generate({
-      length: 8,
-      charset: referralCodes.charset("alphanumeric"),
-    })[0];
-    // console.log(tempPassword,"tempPassword===>")
-    encrypt.genSalt(10, (error, salt) => {
-      if (error) return console.log(error);
-      encrypt.hash(tempPassword, salt, async (error, hash) => {
-        // if (user) {
-        await Model.User.findOneAndUpdate(
+      const tempPassword = Services.EncryptPassword.generateRandomPassword(8); 
+      const hashedPassword = await Services.EncryptPassword.encryptPassword(tempPassword);
+      await Model.User.findOneAndUpdate(
           { _id: user._id },
-          { $set: { password: hash } }
-        );
-      });
-    });
-
+          { $set: { password: hashedPassword } }
+      );
     let replacements = {
       // otp,
       tempPassword,
     };
-    const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${tempPassword}`;
+    console.log(tempPassword,"tempPassword in the forgetPassword")
+    // const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${tempPassword}`;
 
-    // Send the email with the message directly
-    await Services.EmailService.sendEmail(
-      emailMessage,
-      tempPassword,
-      email,
-      "ForgetPassword | vagabond"
-    );
+    // // Send the email with the message directly
+    // await Services.EmailService.sendEmail(
+    //   emailMessage,
+    //   tempPassword,
+    //   email,
+    //   "ForgetPassword | vagabond"
+    // );
     // await Services.EmailService.sendEmail(
     //   "public/otpResetPass.html",
     //   replacements,
@@ -452,8 +442,6 @@ module.exports = {
       }
     }
   }),
-  // Retrieve  user by userId
-  // Retrieve user by userId with associated public and private pins and wishlist items
   getUser: catchAsync(async (req, res, next) => {
     console.log("findUserById is called");
     try {
