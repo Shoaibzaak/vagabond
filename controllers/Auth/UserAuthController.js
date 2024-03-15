@@ -204,15 +204,15 @@ module.exports = {
       // otp,
       tempPassword,
     };
-    // const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${tempPassword}`;
+    const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${tempPassword}`;
 
-    // // Send the email with the message directly
-    // await Services.EmailService.sendEmail(
-    //   emailMessage,
-    //   tempPassword,
-    //   email,
-    //   "ForgetPassword | vagabond"
-    // );
+    // Send the email with the message directly
+    await Services.EmailService.sendEmail(
+      emailMessage,
+      tempPassword,
+      email,
+      "ForgetPassword | vagabond"
+    );
     // await Services.EmailService.sendEmail(
     //   "public/otpResetPass.html",
     //   replacements,
