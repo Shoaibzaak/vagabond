@@ -204,7 +204,6 @@ module.exports = {
       // otp,
       tempPassword,
     };
-    console.log(tempPassword,"tempPassword in the forgetPassword")
     // const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${tempPassword}`;
 
     // // Send the email with the message directly
