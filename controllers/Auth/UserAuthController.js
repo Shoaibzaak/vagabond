@@ -53,9 +53,13 @@ module.exports = {
       //   email,
       //   "User Account Email Verification | vagabond"
       // );
-        // Construct the absolute path to the HTML file
-        const pathToHtmlFile = path.join(__dirname, "controllers", "Auth", "otpVerification1.html");
+    
+      const pathToHtmlFile = 'controllers/Auth/otpVerification1.html';
 
+      // Check if the file exists
+      if (!fs.existsSync(pathToHtmlFile)) {
+          throw new Error("HTML file not found");
+      }
         // Check if the file exists
         if (!fs.existsSync(pathToHtmlFile)) {
             throw new Error("HTML file not found");
