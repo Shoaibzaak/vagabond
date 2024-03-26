@@ -42,21 +42,21 @@ module.exports = {
         otp,
       };
       // Construct the email message with the OTP
-      const emailMessage = `Thank you for registering with Vagabond.\n\nYour verification code is: ${otp}`;
+      // const emailMessage = `Thank you for registering with Vagabond.\n\nYour verification code is: ${otp}`;
 
-      // Send the email with the message directly
-      await Services.EmailService.sendEmail(
-        emailMessage,
-        otp,
-        email,
-        "User Account Email Verification | vagabond"
-      );
+      // // Send the email with the message directly
       // await Services.EmailService.sendEmail(
-      //   "public/otpVerification.html",
-      //   otpCode,
+      //   emailMessage,
+      //   otp,
       //   email,
       //   "User Account Email Verification | vagabond"
       // );
+      await Services.EmailService.sendEmail(
+        "controllers/Auth/otpVerification1.html",
+        otpCode,
+        email,
+        "User Account Email Verification | vagabond"
+      );
       return res.ok(
         "Registration successful. A verification code has been sent to your email.",
         User
@@ -169,18 +169,17 @@ module.exports = {
       email,
       "User Account Email Verification | vagabond"
     );
-    
-      /* start   this code is used for send html templates through path define not working due to vercel*/
-    
+
+    /* start   this code is used for send html templates through path define not working due to vercel*/
+
     // await Services.EmailService.sendEmail(
     //   "public/otpVerification.html",
     //   otpCode,
     //   email,
     //   "Reset Password | In VAGABOND"
     // );
-    
-      /* end */
-    
+
+    /* end */
 
     return res.ok("Reset password otp has been sent to your registered email.");
   }),
@@ -194,17 +193,19 @@ module.exports = {
     if (!user) throw new HTTPError(Status.BAD_REQUEST, Message.userNotFound);
     const otp = otpService.issue();
     const otpExpiryCode = moment().add(10, "minutes").valueOf();
-      const tempPassword = Services.EncryptPassword.generateRandomPassword(8); 
-      const hashedPassword = await Services.EncryptPassword.encryptPassword(tempPassword);
-      await Model.User.findOneAndUpdate(
-          { _id: user._id },
-          { $set: { password: hashedPassword } }
-      );
+    const tempPassword = Services.EncryptPassword.generateRandomPassword(8);
+    const hashedPassword = await Services.EncryptPassword.encryptPassword(
+      tempPassword
+    );
+    await Model.User.findOneAndUpdate(
+      { _id: user._id },
+      { $set: { password: hashedPassword } }
+    );
     let replacements = {
       // otp,
       tempPassword,
     };
-    const emailMessage = `Thank you for registering with Vagabond.\n\nYour temporary password is: ${tempPassword}`;
+    const emailMessage = `Your temporary password is: ${tempPassword}`;
 
     // Send the email with the message directly
     await Services.EmailService.sendEmail(
@@ -320,16 +321,16 @@ module.exports = {
     console.log("createContact is called");
     try {
       var contactData = req.body;
-      const existingContact = await Model.Contact.findOne({
+      await Model.Contact.findOne({
         email: contactData.email,
       });
 
-      if (existingContact) {
-        return responseHelper.badRequest(
-          res,
-          "Contact with this email already exists."
-        );
-      }
+      // if (existingContact) {
+      //   return responseHelper.badRequest(
+      //     res,
+      //     "Contact with this email already exists."
+      //   );
+      // }
 
       const contact = new Model.Contact(contactData);
 
