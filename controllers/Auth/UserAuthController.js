@@ -13,6 +13,8 @@ const responseHelper = require("../../helper/response.helper");
 const validatePassword = require("../../utils/validatePassword");
 const userHelper = require("../../helper/user.helper");
 const cloudUpload = require("../../cloudinary");
+const fs = require('fs');
+const path = require('path');
 module.exports = {
   register: async (req, res, next) => {
     try {
