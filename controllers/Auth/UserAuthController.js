@@ -13,8 +13,6 @@ const responseHelper = require("../../helper/response.helper");
 const validatePassword = require("../../utils/validatePassword");
 const userHelper = require("../../helper/user.helper");
 const cloudUpload = require("../../cloudinary");
-const fs = require('fs');
-const path = require('path');
 module.exports = {
   register: async (req, res, next) => {
     try {
@@ -53,19 +51,8 @@ module.exports = {
       //   email,
       //   "User Account Email Verification | vagabond"
       // );
-    
-      const pathToHtmlFile = 'controllers/Auth/otpVerification1.html';
-
-      // Check if the file exists
-      if (!fs.existsSync(pathToHtmlFile)) {
-          throw new Error("HTML file not found");
-      }
-        // Check if the file exists
-        if (!fs.existsSync(pathToHtmlFile)) {
-            throw new Error("HTML file not found");
-        }
       await Services.EmailService.sendEmail(
-        pathToHtmlFile,
+        "otpVerification1.html",
         otpCode,
         email,
         "User Account Email Verification | vagabond"
