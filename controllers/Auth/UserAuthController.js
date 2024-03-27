@@ -592,27 +592,25 @@ module.exports = {
                             </td>
                         </tr>
                         <tr>
-                            <td bgcolor="#ffffff" align="center" valign="top"
-                                style="color: #186ff2; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 40px; font-weight: 400;letter-spacing: 2px; line-height: 48px;">
-                                <h5 style="margin-bottom: 27px">Email Verification</h5>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td bgcolor="#18b4f2" align="center" style="padding: 0px 10px 0px 10px;">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                        <tr>
-                            <td bgcolor="#ffffff" align="center"
-                                style="font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 20px;">
-                                <p>Please, use this OTP to verify your email</p>
-                                 <h3>{{otp}}</h3>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+                        <td bgcolor="#ffffff" align="center" valign="top"
+                            style="color: #186ff2; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 40px; font-weight: 400;letter-spacing: 2px; line-height: 48px;">
+                            <h5 style="margin-bottom: 27px">Password Reset</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#18b4f2" align="center" style="padding: 0px 10px 0px 10px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                <tr>
+                                    <td bgcolor="#ffffff" align="center"
+                                        style="font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 20px;">
+                                        <p>Please use the following OTP to reset your password:</p>
+                                        <h3>{{otp}}</h3>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
             <tr>
                 <td bgcolor="#18b4f2" align="center" style="padding: 0px 10px 0px 10px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
